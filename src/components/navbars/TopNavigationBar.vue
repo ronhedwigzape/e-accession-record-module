@@ -8,7 +8,7 @@ const menuOpen = ref(false);
 </script>
 
 <template>
-  <v-app-bar>
+  <v-app-bar :elevation="1">
     <v-app-bar-title>Learning Resources and Development Services</v-app-bar-title>
 
     <v-btn stacked>
