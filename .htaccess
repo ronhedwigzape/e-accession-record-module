@@ -1,0 +1,16 @@
+RewriteEngine On
+RewriteBase /e-accession-record-module/
+
+# Exclude assets from rewrite rule
+RewriteCond %{REQUEST_URI} !\.(css|js|svg|jpg|jpeg|png|gif|woff2|ico|ttf)$ [NC]
+
+# Redirect all requests to index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /e-accession-record-module/public/index.html [L]
+
+# Exclude the public and app directories from the rewrite rule
+RewriteCond %{REQUEST_URI} !^/e-accession-record-module/public/
+RewriteCond %{REQUEST_URI} !^/e-accession-record-module/app/
+RewriteRule ^(.*)$ /e-accession-record-module/public/$1 [L]
+
