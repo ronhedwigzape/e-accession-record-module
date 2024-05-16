@@ -27,13 +27,3 @@ if($conn->connect_error) {
         'error' => $conn->connect_error
     ]));
 }
-
-/*
-|-----------------------------------------------------------------------
-| API SECRET_KEY Configuration
-|-----------------------------------------------------------------------
-| Enter your RECAPTCHA_SECRET_KEY for your Google reCAPTCHA.
-|
-*/
-
-const RECAPTCHA_SECRET_KEY = 'YOUR_RECAPTCHA_SECRET_KEY';
