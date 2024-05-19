@@ -9,7 +9,10 @@ const menuOpen = ref(false);
 
 <template>
   <v-app-bar :elevation="1">
-    <v-app-bar-title>Learning Resources and Development Services</v-app-bar-title>
+    <v-app-bar-title>
+      <p class="font-weight-bold">Learning Resources and Development Services</p>
+      <p class="text-uppercase font-weight-bold text-blue-darken-1">E-Accession Record Module</p>
+    </v-app-bar-title>
 
     <v-btn stacked>
       <v-icon>mdi-menu</v-icon>

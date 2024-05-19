@@ -4,58 +4,153 @@
     <v-row>
       <v-col cols="6">
         <v-card>
-          <v-card-title>Book Details</v-card-title>
+          <v-card-title class="bg-deep-purple-darken-4 mb-4 text-center">Bibliographic</v-card-title>
           <v-card-text>
-            <v-form>
-              <v-row>
-                <v-col cols="6">
-                  <v-text-field label="Accession Number" outlined dense></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field label="Date Received" outlined dense></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
-                  <v-text-field label="No. of Copies" outlined dense></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field label="Year" outlined dense></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field label="Title" outlined dense></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field label="Author" outlined dense></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field label="Publisher" outlined dense></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" class="d-flex justify-space-between">
-                  <v-btn color="primary">Save</v-btn>
-                  <v-btn color="error">Delete</v-btn>
-                  <v-btn>Reset</v-btn>
-                </v-col>
-              </v-row>
-            </v-form>
+            <v-row>
+              <v-col cols="8">
+                <v-card elevation="0">
+                  <v-card-text>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field label="Date Received" variant="outlined" density="compact"></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-text-field label="No. of Copies" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-radio-group inline>
+                          <v-radio label="Book" value="radio-1"></v-radio>
+                          <v-radio label="UM" value="radio-2"></v-radio>
+                          <v-radio label="AV" value="radio-3"></v-radio>
+                        </v-radio-group>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field label="Title" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field label="Author" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-text-field label="Publisher" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field label="Place of Publication" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="2">
+                        <v-text-field label="Copyright" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                      <v-col cols="2">
+                        <v-text-field label="Volume" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                      <v-col cols="2">
+                        <v-text-field label="Edition" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-text-field label="Pages" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-text-field label="Cost Price" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-text-field label="Source of Fund" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-select
+                          clearable
+                          label="Department"
+                          :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+                          variant="outlined"
+                          density="compact"
+                        ></v-select>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field label="Remarks" variant="outlined" density="compact" ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn variant="tonal">Reset</v-btn>
+                    <v-btn variant="tonal" color="primary">Save</v-btn>
+                    <v-btn variant="tonal" color="error">Delete</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+              <v-col cols="4">
+                <v-card elevation="0">
+                  <v-card-text>
+                    <v-card>
+                      <v-card-title>Accession to Edit</v-card-title>
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12">
+                            <v-text-field hint="Press Enter to Search" variant="outlined" density="compact" ></v-text-field>                      </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                    <v-card class="mt-2" elevation="0">
+                      <v-card-title>Accession List</v-card-title>
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12">
+
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card-text>
         </v-card>
-        <v-card>
-          <v-card-title>Print</v-card-title>
+        <v-card class="mt-2">
+          <v-card-title class="bg-deep-purple-darken-4 mb-4 text-center">Reports Generation</v-card-title>
           <v-card-text>
             <v-form>
-              <v-radio-group row>
-                <v-radio label="Book Details" value="book"></v-radio>
-                <v-radio label="User Manual" value="um"></v-radio>
-              </v-radio-group>
+              <v-row>
+                <v-col cols="6">
+                  <v-radio-group inline>
+                    <v-radio label="Book" value="book"></v-radio>
+                    <v-radio label="AV" value="av"></v-radio>
+                    <v-radio label="UM" value="um"></v-radio>
+                  </v-radio-group>
+                  <v-radio-group>
+                    <v-radio label="Bibliographies" value="bibliographies"></v-radio>
+                    <v-radio label="Materials for Circulation" value="circulation"></v-radio>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="6">
+                  <v-select
+                    clearable
+                    label="Department"
+                    :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+                    variant="outlined"
+                  ></v-select>
+                  <div class="d-flex justify-center">
+                    <v-date-input
+                      variant="outlined"
+                      v-model="model"
+                      label="Select range (From - To)"
+                      max-width="368"
+                      multiple="range"
+                    ></v-date-input>
+                  </div>
+                </v-col>
+              </v-row>
               <v-btn color="primary">Generate</v-btn>
             </v-form>
           </v-card-text>
@@ -65,7 +160,7 @@
         <v-card>
           <v-card-title>List of Books</v-card-title>
           <v-card-text>
-            <v-text-field label="Search" outlined dense solo-inverted clearable append-icon="mdi-magnify"></v-text-field>
+            <v-text-field variant="outlined" label="Search" outlined dense solo-inverted clearable append-icon="mdi-magnify"></v-text-field>
             <v-data-table
               :headers="headers"
               :items="books"
@@ -85,6 +180,7 @@ import TopNavigationBar from "@/components/navbars/TopNavigationBar.vue";
 export default {
   components: {TopNavigationBar},
   data: () => ({
+    model: null,
     search: '',
     books: [
       { accession: '0201410', date: '2019-04-11', author: 'Pratt Philip J.', title: 'Database Management System', publisher: 'McGraw Hill', year: '2018' },
