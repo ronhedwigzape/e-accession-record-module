@@ -4,10 +4,15 @@
     <v-row>
       <v-col cols="12" md="6">
         <v-card>
-          <v-card-title class="bg-deep-purple-darken-4 mb-4 text-center">Bibliographic</v-card-title>
+          <v-card-title
+            class="bg-deep-purple-darken-4 mb-4 text-center d-flex justify-center align-center !tw-items-center"
+          >
+            <v-icon class="mr-1" size="x-small">mdi-book</v-icon>
+            Bibliographic
+          </v-card-title>
           <v-card-text>
             <v-row>
-              <v-col cols="12">
+              <v-col cols="12" md="8" >
                 <v-card elevation="0">
                   <v-card-text>
                     <v-row>
@@ -119,7 +124,12 @@
           </v-card-text>
         </v-card>
         <v-card class="mt-2">
-          <v-card-title class="bg-deep-purple-darken-4 mb-4 text-center">Reports Generation</v-card-title>
+          <v-card-title
+            class="bg-deep-purple-darken-4 mb-4 text-center d-flex justify-center align-center"
+          >
+            <v-icon class="mr-1" size="x-small">mdi-microsoft-excel</v-icon>
+            Reports Generation
+          </v-card-title>
           <v-card-text>
             <v-form>
               <v-row>
@@ -159,7 +169,12 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-card>
-          <v-card-title>List of Books</v-card-title>
+          <v-card-title
+            class="bg-deep-purple-darken-4 mb-4 text-center d-flex justify-center align-center"
+          >
+            <v-icon class="mr-1" size="x-small">mdi-book-open-page-variant</v-icon>
+            List of Books
+          </v-card-title>
           <v-card-text>
             <v-text-field variant="outlined" label="Search" outlined dense solo-inverted clearable append-icon="mdi-magnify"></v-text-field>
             <v-data-table
