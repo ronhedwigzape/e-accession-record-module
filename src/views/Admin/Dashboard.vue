@@ -2,12 +2,12 @@
   <TopNavigationBar/>
   <v-container fluid>
     <v-row>
-      <v-col cols="6">
+      <v-col cols="12" md="6">
         <v-card>
           <v-card-title class="bg-deep-purple-darken-4 mb-4 text-center">Bibliographic</v-card-title>
           <v-card-text>
             <v-row>
-              <v-col cols="8">
+              <v-col cols="12">
                 <v-card elevation="0">
                   <v-card-text>
                     <v-row>
@@ -16,10 +16,10 @@
                       </v-col>
                     </v-row>
                     <v-row>
-                      <v-col cols="6">
-                        <v-text-field label="No. of Copies" variant="outlined" density="compact" ></v-text-field>
+                      <v-col cols="12" md="6">
+                        <v-text-field label="No. of Copies" variant="outlined" density="compact"></v-text-field>
                       </v-col>
-                      <v-col cols="6">
+                      <v-col cols="12" md="6">
                         <v-radio-group inline>
                           <v-radio label="Book" value="radio-1"></v-radio>
                           <v-radio label="UM" value="radio-2"></v-radio>
@@ -29,44 +29,44 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12">
-                        <v-text-field label="Title" variant="outlined" density="compact" ></v-text-field>
+                        <v-text-field label="Title" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="12">
-                        <v-text-field label="Author" variant="outlined" density="compact" ></v-text-field>
+                        <v-text-field label="Author" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
-                      <v-col cols="6">
-                        <v-text-field label="Publisher" variant="outlined" density="compact" ></v-text-field>
+                      <v-col cols="12" md="6">
+                        <v-text-field label="Publisher" variant="outlined" density="compact"></v-text-field>
                       </v-col>
-                      <v-col cols="6">
-                        <v-text-field label="Place of Publication" variant="outlined" density="compact" ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="2">
-                        <v-text-field label="Copyright" variant="outlined" density="compact" ></v-text-field>
-                      </v-col>
-                      <v-col cols="2">
-                        <v-text-field label="Volume" variant="outlined" density="compact" ></v-text-field>
-                      </v-col>
-                      <v-col cols="2">
-                        <v-text-field label="Edition" variant="outlined" density="compact" ></v-text-field>
-                      </v-col>
-                      <v-col cols="3">
-                        <v-text-field label="Pages" variant="outlined" density="compact" ></v-text-field>
-                      </v-col>
-                      <v-col cols="3">
-                        <v-text-field label="Cost Price" variant="outlined" density="compact" ></v-text-field>
+                      <v-col cols="12" md="6">
+                        <v-text-field label="Place of Publication" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
-                      <v-col cols="6">
-                        <v-text-field label="Source of Fund" variant="outlined" density="compact" ></v-text-field>
+                      <v-col cols="6" md="2">
+                        <v-text-field label="Copyright" variant="outlined" density="compact"></v-text-field>
                       </v-col>
-                      <v-col cols="6">
+                      <v-col cols="6" md="2">
+                        <v-text-field label="Volume" variant="outlined" density="compact"></v-text-field>
+                      </v-col>
+                      <v-col cols="6" md="2">
+                        <v-text-field label="Edition" variant="outlined" density="compact"></v-text-field>
+                      </v-col>
+                      <v-col cols="6" md="3">
+                        <v-text-field label="Pages" variant="outlined" density="compact"></v-text-field>
+                      </v-col>
+                      <v-col cols="6" md="3">
+                        <v-text-field label="Cost Price" variant="outlined" density="compact"></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" md="6">
+                        <v-text-field label="Source of Fund" variant="outlined" density="compact"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
                         <v-select
                           clearable
                           label="Department"
@@ -78,7 +78,7 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12">
-                        <v-text-field label="Remarks" variant="outlined" density="compact" ></v-text-field>
+                        <v-text-field label="Remarks" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -89,7 +89,7 @@
                   </v-card-actions>
                 </v-card>
               </v-col>
-              <v-col cols="4">
+              <v-col cols="12" md="4">
                 <v-card elevation="0">
                   <v-card-text>
                     <v-card>
@@ -97,7 +97,8 @@
                       <v-card-text>
                         <v-row>
                           <v-col cols="12">
-                            <v-text-field hint="Press Enter to Search" variant="outlined" density="compact" ></v-text-field>                      </v-col>
+                            <v-text-field hint="Press Enter to Search" variant="outlined" density="compact"></v-text-field>
+                          </v-col>
                         </v-row>
                       </v-card-text>
                     </v-card>
@@ -106,7 +107,7 @@
                       <v-card-text>
                         <v-row>
                           <v-col cols="12">
-
+                            <!-- Accession List Content -->
                           </v-col>
                         </v-row>
                       </v-card-text>
@@ -122,7 +123,7 @@
           <v-card-text>
             <v-form>
               <v-row>
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                   <v-radio-group inline>
                     <v-radio label="Book" value="book"></v-radio>
                     <v-radio label="AV" value="av"></v-radio>
@@ -133,7 +134,7 @@
                     <v-radio label="Materials for Circulation" value="circulation"></v-radio>
                   </v-radio-group>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                   <v-select
                     clearable
                     label="Department"
@@ -156,7 +157,7 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="12" md="6">
         <v-card>
           <v-card-title>List of Books</v-card-title>
           <v-card-text>
@@ -173,7 +174,6 @@
     </v-row>
   </v-container>
 </template>
-
 <script>
 import TopNavigationBar from "@/components/navbars/TopNavigationBar.vue";
 
