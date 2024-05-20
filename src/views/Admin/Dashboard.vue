@@ -12,7 +12,7 @@
           </v-card-title>
           <v-card-text>
             <v-row>
-              <v-col cols="12" md="8" >
+              <v-col cols="12" md="7" >
                 <v-card elevation="0">
                   <v-card-text>
                     <v-row>
@@ -51,19 +51,21 @@
                       </v-col>
                     </v-row>
                     <v-row>
-                      <v-col cols="6" md="2">
+                      <v-col cols="6" md="4">
                         <v-text-field label="Copyright" variant="outlined" density="compact"></v-text-field>
                       </v-col>
-                      <v-col cols="6" md="2">
+                      <v-col cols="6" md="4">
                         <v-text-field label="Volume" variant="outlined" density="compact"></v-text-field>
                       </v-col>
-                      <v-col cols="6" md="2">
+                      <v-col cols="6" md="4">
                         <v-text-field label="Edition" variant="outlined" density="compact"></v-text-field>
                       </v-col>
-                      <v-col cols="6" md="3">
+                    </v-row>
+                    <v-row>
+                      <v-col cols="6" md="6">
                         <v-text-field label="Pages" variant="outlined" density="compact"></v-text-field>
                       </v-col>
-                      <v-col cols="6" md="3">
+                      <v-col cols="6" md="6">
                         <v-text-field label="Cost Price" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
@@ -75,7 +77,8 @@
                         <v-select
                           clearable
                           label="Department"
-                          :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+                          :items="departments"
+                          :item-props="departmentProps"
                           variant="outlined"
                           density="compact"
                         ></v-select>
@@ -94,10 +97,10 @@
                   </v-card-actions>
                 </v-card>
               </v-col>
-              <v-col cols="12" md="4">
-                <v-card elevation="0">
+              <v-col cols="12" md="5">
+                <v-card variant="tonal" color="primary" height="900" max-height="800" elevation="0">
                   <v-card-text>
-                    <v-card>
+                    <v-card variant="text">
                       <v-card-title>Accession to Edit</v-card-title>
                       <v-card-text>
                         <v-row>
@@ -107,7 +110,7 @@
                         </v-row>
                       </v-card-text>
                     </v-card>
-                    <v-card class="mt-2" elevation="0">
+                    <v-card variant="text" class="mt-2">
                       <v-card-title>Accession List</v-card-title>
                       <v-card-text>
                         <v-row>
@@ -148,8 +151,10 @@
                   <v-select
                     clearable
                     label="Department"
-                    :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+                    :items="departments"
+                    :item-props="departmentProps"
                     variant="outlined"
+                    density="compact"
                   ></v-select>
                   <div class="d-flex justify-center">
                     <v-date-input
@@ -158,11 +163,12 @@
                       label="Select range (From - To)"
                       max-width="368"
                       multiple="range"
+                      density="compact"
                     ></v-date-input>
                   </div>
                 </v-col>
               </v-row>
-              <v-btn color="primary">Generate</v-btn>
+              <v-btn variant="tonal" color="primary">Generate</v-btn>
             </v-form>
           </v-card-text>
         </v-card>
@@ -178,6 +184,7 @@
           <v-card-text>
             <v-text-field variant="outlined" label="Search" outlined dense solo-inverted clearable append-icon="mdi-magnify"></v-text-field>
             <v-data-table
+              v-model:items-per-page="itemsPerPage"
               :headers="headers"
               :items="books"
               :search="search"
@@ -197,6 +204,61 @@ export default {
   data: () => ({
     model: null,
     search: '',
+    itemsPerPage: 15,
+    departments: [
+      {
+        name: 'CAS',
+        description: ''
+      },
+      {
+        name: 'CTDE',
+        description: ''
+      },
+      {
+        name: 'CCS',
+        description: ''
+      },
+      {
+        name: 'CEA',
+        description: ''
+      },
+      {
+        name: 'CHS',
+        description: ''
+      },
+      {
+        name: 'CTHBM',
+        description: ''
+      },
+      {
+        name: 'GRD',
+        description: ''
+      },
+      {
+        name: 'DON',
+        description: 'Donated Books'
+      },
+      {
+        name: 'FIL',
+        description: 'Filipiniana'
+      },
+      {
+        name: 'FIC',
+        description: 'Fiction'
+      },
+      {
+        name: 'BKL',
+        description: 'Bikoliana'
+      },
+      {
+        name: 'RES',
+        description: 'Reserved'
+      },
+      {
+        name: 'REF',
+        description: 'General References'
+      },
+    ],
     books: [
       { accession: '0201410', date: '2019-04-11', author: 'Pratt Philip J.', title: 'Database Management System', publisher: 'McGraw Hill', year: '2018' },
       { accession: '0201411', date: '2020-06-15', author: 'Elmasri Navathe', title: 'Fundamentals of Database Systems', publisher: 'Pearson', year: '2016' },
@@ -227,5 +289,14 @@ export default {
       { title: 'Year', value: 'year', align: 'start', sortable: true }
     ],
   }),
+
+  methods: {
+    departmentProps (item) {
+      return {
+        title: item.name,
+        subtitle: item.description,
+      }
+    },
+  },
 }
 </script>
