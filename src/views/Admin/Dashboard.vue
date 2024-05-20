@@ -17,64 +17,65 @@
                   <v-card-text>
                     <v-row>
                       <v-col cols="12">
-                        <v-text-field label="Date Received" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="date_received" label="Date Received" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="12" md="6">
-                        <v-text-field label="No. of Copies" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="copy" label="No. of Copies" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                       <v-col cols="12" md="6">
-                        <v-radio-group inline>
-                          <v-radio label="Book" value="radio-1"></v-radio>
-                          <v-radio label="UM" value="radio-2"></v-radio>
-                          <v-radio label="AV" value="radio-3"></v-radio>
+                        <v-radio-group v-model="type" inline>
+                          <v-radio label="Book" value="Book"></v-radio>
+                          <v-radio label="UM" value="UM"></v-radio>
+                          <v-radio label="AV" value="AV"></v-radio>
                         </v-radio-group>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="12">
-                        <v-text-field label="Title" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="title" label="Title" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="12">
-                        <v-text-field label="Author" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="author" label="Author" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="12" md="6">
-                        <v-text-field label="Publisher" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="publisher" label="Publisher" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                       <v-col cols="12" md="6">
-                        <v-text-field label="Place of Publication" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="publicationPlace" label="Place of Publication" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="6" md="4">
-                        <v-text-field label="Copyright" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="copyright" label="Copyright" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                       <v-col cols="6" md="4">
-                        <v-text-field label="Volume" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="volumes" label="Volume" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                       <v-col cols="6" md="4">
-                        <v-text-field label="Edition" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="edition" label="Edition" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="6" md="6">
-                        <v-text-field label="Pages" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="pages" label="Pages" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                       <v-col cols="6" md="6">
-                        <v-text-field label="Cost Price" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="cost_price" label="Cost Price" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="12" md="6">
-                        <v-text-field label="Source of Fund" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="source_of_fund" label="Source of Fund" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                       <v-col cols="12" md="6">
                         <v-select
+                          v-model="department"
                           clearable
                           label="Department"
                           :items="departments"
@@ -86,14 +87,14 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12">
-                        <v-text-field label="Remarks" variant="outlined" density="compact"></v-text-field>
+                        <v-text-field v-model="remarks" label="Remarks" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn variant="tonal">Reset</v-btn>
-                    <v-btn variant="tonal" color="primary">Save</v-btn>
-                    <v-btn variant="tonal" color="error">Delete</v-btn>
+                    <v-btn variant="tonal" @click="resetForm">Reset</v-btn>
+                    <v-btn variant="tonal" color="primary" @click="saveAccession">Save</v-btn>
+                    <v-btn variant="tonal" color="error" @click="deleteAccession">Delete</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -105,7 +106,7 @@
                       <v-card-text>
                         <v-row>
                           <v-col cols="12">
-                            <v-text-field hint="Press Enter to Search" variant="outlined" density="compact"></v-text-field>
+                            <v-text-field v-model="accessionSearch" hint="Press Enter to Search" variant="outlined" density="compact"></v-text-field>
                           </v-col>
                         </v-row>
                       </v-card-text>
@@ -115,7 +116,22 @@
                       <v-card-text>
                         <v-row>
                           <v-col cols="12">
-                            <!-- Accession List Content -->
+                            <v-list>
+                              <v-list-item
+                                v-for="(book, index) in filteredAccessions"
+                                :key="book.id"
+                                @click="populateForm(book)"
+                              >
+                                <v-list-item-title>{{ book.accession_number }} - {{ book.title }}</v-list-item-title>
+                                <v-list-item-subtitle>{{ book.author }}</v-list-item-subtitle>
+                              </v-list-item>
+                            </v-list>
+                            <v-progress-circular
+                              v-if="loadingAccessions"
+                              indeterminate
+                              color="primary"
+                              class="d-flex justify-center mt-4"
+                            ></v-progress-circular>
                           </v-col>
                         </v-row>
                       </v-card-text>
@@ -182,121 +198,249 @@
             List of Books
           </v-card-title>
           <v-card-text>
-            <v-text-field variant="outlined" label="Search" outlined dense solo-inverted clearable append-icon="mdi-magnify"></v-text-field>
+            <v-text-field v-model="bookSearch" variant="outlined" label="Search" outlined dense solo-inverted clearable append-icon="mdi-magnify"></v-text-field>
             <v-data-table
               v-model:items-per-page="itemsPerPage"
               :headers="headers"
-              :items="books"
-              :search="search"
+              :items="filteredBooks"
+              :search="bookSearch"
               class="elevation-1"
             ></v-data-table>
+            <v-progress-circular
+              v-if="loadingBooks"
+              indeterminate
+              color="primary"
+              class="d-flex justify-center mt-4"
+            ></v-progress-circular>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
+
 <script>
+import axios from 'axios';
+import { useStore } from '@/stores/store';
 import TopNavigationBar from "@/components/navbars/TopNavigationBar.vue";
 
 export default {
-  components: {TopNavigationBar},
+  components: { TopNavigationBar },
   data: () => ({
     model: null,
-    search: '',
-    itemsPerPage: 15,
+    bookSearch: '',
+    accessionSearch: '',
+    itemsPerPage: 10,
+    loadingBooks: false,
+    loadingAccessions: false,
     departments: [
-      {
-        name: 'CAS',
-        description: ''
-      },
-      {
-        name: 'CTDE',
-        description: ''
-      },
-      {
-        name: 'CCS',
-        description: ''
-      },
-      {
-        name: 'CEA',
-        description: ''
-      },
-      {
-        name: 'CHS',
-        description: ''
-      },
-      {
-        name: 'CTHBM',
-        description: ''
-      },
-      {
-        name: 'GRD',
-        description: ''
-      },
-      {
-        name: 'DON',
-        description: 'Donated Books'
-      },
-      {
-        name: 'FIL',
-        description: 'Filipiniana'
-      },
-      {
-        name: 'FIC',
-        description: 'Fiction'
-      },
-      {
-        name: 'BKL',
-        description: 'Bikoliana'
-      },
-      {
-        name: 'RES',
-        description: 'Reserved'
-      },
-      {
-        name: 'REF',
-        description: 'General References'
-      },
+      { name: 'CAS', description: '' },
+      { name: 'CTDE', description: '' },
+      { name: 'CCS', description: '' },
+      { name: 'CEA', description: '' },
+      { name: 'CHS', description: '' },
+      { name: 'CTHBM', description: '' },
+      { name: 'GRD', description: '' },
+      { name: 'DON', description: 'Donated Books' },
+      { name: 'FIL', description: 'Filipiniana' },
+      { name: 'FIC', description: 'Fiction' },
+      { name: 'BKL', description: 'Bikoliana' },
+      { name: 'RES', description: 'Reserved' },
+      { name: 'REF', description: 'General References' },
     ],
-    books: [
-      { accession: '0201410', date: '2019-04-11', author: 'Pratt Philip J.', title: 'Database Management System', publisher: 'McGraw Hill', year: '2018' },
-      { accession: '0201411', date: '2020-06-15', author: 'Elmasri Navathe', title: 'Fundamentals of Database Systems', publisher: 'Pearson', year: '2016' },
-      { accession: '0201412', date: '2021-03-22', author: 'Silberschatz A.', title: 'Operating System Concepts', publisher: 'Wiley', year: '2018' },
-      { accession: '0201413', date: '2018-07-08', author: 'Tanenbaum A.S.', title: 'Computer Networks', publisher: 'Prentice Hall', year: '2017' },
-      { accession: '0201414', date: '2019-11-19', author: 'Kernighan B.', title: 'The C Programming Language', publisher: 'PHI', year: '1988' },
-      { accession: '0201415', date: '2020-01-27', author: 'Martin R.C.', title: 'Clean Code', publisher: 'Prentice Hall', year: '2009' },
-      { accession: '0201416', date: '2021-05-14', author: 'Harel D.', title: 'Algorithmics', publisher: 'Addison Wesley', year: '2004' },
-      { accession: '0201417', date: '2017-02-11', author: 'Fowler M.', title: 'Refactoring', publisher: 'Addison Wesley', year: '2018' },
-      { accession: '0201418', date: '2018-09-20', author: 'Beck K.', title: 'Test Driven Development', publisher: 'Addison Wesley', year: '2003' },
-      { accession: '0201419', date: '2019-12-15', author: 'Gamma E.', title: 'Design Patterns', publisher: 'Addison Wesley', year: '1995' },
-      { accession: '0201420', date: '2020-08-05', author: 'Knuth D.E.', title: 'The Art of Computer Programming', publisher: 'Addison Wesley', year: '1997' },
-      { accession: '0201450', date: '2019-04-11', author: 'Tanya X. Short; Tarn Adams', title: 'Procedural Generation in Game Design', publisher: 'CRC Press', year: '2017' },
-      { accession: '0201451', date: '2019-04-11', author: 'Donovan, John; Prabhu, Krish', title: 'Building the Network for the Future', publisher: 'Springer', year: '2019' },
-      { accession: '0201452', date: '2019-04-11', author: 'Zhang, Dan', title: 'AI for program data quality in cooperative wireless networks', publisher: 'IEEE', year: '2020' },
-      { accession: '0201453', date: '2019-04-11', author: 'Hassan, Emad S.', title: 'Security and data reliability in cooperative cognitive radio networks', publisher: 'IEEE', year: '2021' },
-      { accession: '0201454', date: '2019-04-11', author: 'Bone, James', title: 'Cognitive hack: the new battleground in cybersecurity... the human mind', publisher: 'CRC Press', year: '2018' },
-      { accession: '0201455', date: '2019-04-11', author: 'Deka, Ganesh Chandra', title: 'NoSQL database for storage and retrieval of data in cloud', publisher: 'CRC Press', year: '2019' },
-      { accession: '0201456', date: '2019-04-11', author: 'Boss, Stephen', title: 'Digital type design for branding: designing letters from their source', publisher: 'CRC Press', year: '2020' },
-      { accession: '0201457', date: '2019-04-11', author: 'Carman, Christopher', title: 'Visual design concepts for mobile games', publisher: 'CRC Press', year: '2021' }
-    ],
+    books: [],
     headers: [
-      { title: 'Accession Number', value: 'accession', align: 'start', sortable: true },
-      { title: 'Date Received', value: 'date', align: 'start', sortable: true },
-      { title: 'Author', value: 'author', align: 'start', sortable: true },
+      { title: 'Accession Number', value: 'accession_number', align: 'start', sortable: true },
+      { title: 'Date Received', value: 'date_received', align: 'start', sortable: true },
+      { title: 'Source of Fund', value: 'source_of_fund', align: 'start', sortable: true },
+      { title: 'Cost Price', value: 'cost_price', align: 'start', sortable: true },
+      { title: 'Remarks', value: 'remarks', align: 'start', sortable: true },
+      { title: 'ISBN', value: 'isbn', align: 'start', sortable: true },
+      { title: 'Date Accession', value: 'dateaccession', align: 'start', sortable: true },
       { title: 'Title', value: 'title', align: 'start', sortable: true },
+      { title: 'Author', value: 'author', align: 'start', sortable: true },
+      { title: 'Edition', value: 'edition', align: 'start', sortable: true },
+      { title: 'Volumes', value: 'volumes', align: 'start', sortable: true },
+      { title: 'Pages', value: 'pages', align: 'start', sortable: true },
+      { title: 'Copyright', value: 'copyright', align: 'start', sortable: true },
       { title: 'Publisher', value: 'publisher', align: 'start', sortable: true },
-      { title: 'Year', value: 'year', align: 'start', sortable: true }
+      { title: 'Department', value: 'department', align: 'start', sortable: true },
+      { title: 'Copy', value: 'copy', align: 'start', sortable: true },
+      { title: 'Encoder', value: 'encoder', align: 'start', sortable: true },
+      { title: 'Type', value: 'type', align: 'start', sortable: true },
+      { title: 'Publication Place', value: 'publicationPlace', align: 'start', sortable: true },
+      { title: 'Call Number', value: 'call_no', align: 'start', sortable: true }
     ],
+    accession_number: '',
+    date_received: '',
+    source_of_fund: '',
+    cost_price: '',
+    remarks: '',
+    isbn: '',
+    dateaccession: '',
+    title: '',
+    author: '',
+    edition: '',
+    volumes: '',
+    pages: '',
+    copyright: '',
+    publisher: '',
+    department: '',
+    copy: '',
+    encoder: '',
+    type: '',
+    publicationPlace: '',
+    call_no: '',
+    accession_id: null,
   }),
 
+  computed: {
+    filteredBooks() {
+      return this.books.filter(book => {
+        return book.title.toLowerCase().includes(this.bookSearch.toLowerCase()) ||
+          book.author.toLowerCase().includes(this.bookSearch.toLowerCase());
+      });
+    },
+    filteredAccessions() {
+      return this.books.filter(book => {
+        return book.accession_number.toLowerCase().includes(this.accessionSearch.toLowerCase()) ||
+          book.title.toLowerCase().includes(this.accessionSearch.toLowerCase()) ||
+          book.author.toLowerCase().includes(this.accessionSearch.toLowerCase());
+      });
+    }
+  },
+
   methods: {
-    departmentProps (item) {
+    departmentProps(item) {
       return {
         title: item.name,
         subtitle: item.description,
-      }
+      };
     },
+    fetchBooks() {
+      this.loadingBooks = true;
+      const store = useStore();
+      axios.get(`${store.appURL}/admin.php?load`, { withCredentials: true })
+        .then(response => {
+          this.books = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching books:', error);
+        })
+        .finally(() => {
+          this.loadingBooks = false;
+        });
+    },
+    saveAccession() {
+      const store = useStore();
+      const data = {
+        accession_number: this.accession_number,
+        date_received: this.date_received,
+        source_of_fund: this.source_of_fund,
+        cost_price: this.cost_price,
+        remarks: this.remarks,
+        isbn: this.isbn,
+        dateaccession: this.dateaccession,
+        title: this.title,
+        author: this.author,
+        edition: this.edition,
+        volumes: this.volumes,
+        pages: this.pages,
+        copyright: this.copyright,
+        publisher: this.publisher,
+        department: this.department,
+        copy: this.copy,
+        encoder: this.encoder,
+        type: this.type,
+        publicationPlace: this.publicationPlace,
+        call_no: this.call_no,
+        id: this.accession_id
+      };
+
+      axios.post(`${store.appURL}/admin.php`, { save: JSON.stringify(data) }, { withCredentials: true })
+        .then(response => {
+          console.log('Accession saved:', response.data);
+          this.fetchBooks();
+          this.resetForm();
+        })
+        .catch(error => {
+          console.error('Error saving accession:', error);
+        });
+    },
+    deleteAccession() {
+      const store = useStore();
+      const id = this.accession_id;
+
+      axios.post(`${store.appURL}/admin.php`, { delete: id }, { withCredentials: true })
+        .then(response => {
+          console.log('Accession deleted:', response.data);
+          this.fetchBooks();
+          this.resetForm();
+        })
+        .catch(error => {
+          console.error('Error deleting accession:', error);
+        });
+    },
+    searchAccession() {
+      this.loadingAccessions = true;
+      this.loadingAccessions = false;
+    },
+    populateForm(book) {
+      this.accession_number = book.accession_number;
+      this.date_received = book.date_received;
+      this.source_of_fund = book.source_of_fund;
+      this.cost_price = book.cost_price;
+      this.remarks = book.remarks;
+      this.isbn = book.isbn;
+      this.dateaccession = book.dateaccession;
+      this.title = book.title;
+      this.author = book.author;
+      this.edition = book.edition;
+      this.volumes = book.volumes;
+      this.pages = book.pages;
+      this.copyright = book.copyright;
+      this.publisher = book.publisher;
+      this.department = book.department;
+      this.copy = book.copy;
+      this.encoder = book.encoder;
+      this.type = book.type;
+      this.publicationPlace = book.publicationPlace;
+      this.call_no = book.call_no;
+      this.accession_id = book.id;
+    },
+    resetForm() {
+      this.accession_number = '';
+      this.date_received = '';
+      this.source_of_fund = '';
+      this.cost_price = '';
+      this.remarks = '';
+      this.isbn = '';
+      this.dateaccession = '';
+      this.title = '';
+      this.author = '';
+      this.edition = '';
+      this.volumes = '';
+      this.pages = '';
+      this.copyright = '';
+      this.publisher = '';
+      this.department = '';
+      this.copy = '';
+      this.encoder = '';
+      this.type = '';
+      this.publicationPlace = '';
+      this.call_no = '';
+      this.accession_id = null;
+    }
   },
-}
+
+  watch: {
+    accessionSearch(newSearch) {
+      this.searchAccession();
+    }
+  },
+
+  mounted() {
+    this.fetchBooks();
+  }
+};
 </script>
