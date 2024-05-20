@@ -17,7 +17,7 @@
                   <v-card-text>
                     <v-row>
                       <v-col cols="12">
-                        <v-text-field v-model="date_received" label="Date Received" variant="outlined" density="compact"></v-text-field>
+                        <v-date-input v-model="date_received" label="Date Received" variant="outlined" density="compact"></v-date-input>
                       </v-col>
                     </v-row>
                     <v-row>
@@ -99,7 +99,7 @@
                 </v-card>
               </v-col>
               <v-col cols="12" md="5">
-                <v-card variant="tonal" color="primary" height="900" max-height="800" elevation="0">
+                <v-card variant="tonal" color="primary" height="1000" max-height="900" elevation="0">
                   <v-card-text>
                     <v-card variant="text">
                       <v-card-title>Accession to Edit</v-card-title>
@@ -129,7 +129,7 @@
                             <v-progress-circular
                               v-if="loadingAccessions"
                               indeterminate
-                              color="primary"
+                              color="black"
                               class="d-flex justify-center mt-4"
                             ></v-progress-circular>
                           </v-col>
@@ -206,12 +206,12 @@
               :search="bookSearch"
               class="elevation-1"
             ></v-data-table>
-            <v-progress-circular
-              v-if="loadingBooks"
-              indeterminate
-              color="primary"
-              class="d-flex justify-center mt-4"
-            ></v-progress-circular>
+            <v-row v-if="loadingBooks" class="d-flex justify-center align-center mt-4">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
+            </v-row>
           </v-card-text>
         </v-card>
       </v-col>
@@ -319,8 +319,7 @@ export default {
     },
     fetchBooks() {
       this.loadingBooks = true;
-      const store = useStore();
-      axios.get(`${store.appURL}/admin.php?load`, { withCredentials: true })
+      axios.get(`${useStore().appURL}/admin.php?load`, { withCredentials: true })
         .then(response => {
           this.books = response.data;
         })
@@ -332,7 +331,6 @@ export default {
         });
     },
     saveAccession() {
-      const store = useStore();
       const data = {
         accession_number: this.accession_number,
         date_received: this.date_received,
@@ -357,7 +355,7 @@ export default {
         id: this.accession_id
       };
 
-      axios.post(`${store.appURL}/admin.php`, { save: JSON.stringify(data) }, { withCredentials: true })
+      axios.post(`${useStore().appURL}/admin.php`, { save: JSON.stringify(data) }, { withCredentials: true })
         .then(response => {
           console.log('Accession saved:', response.data);
           this.fetchBooks();
@@ -368,10 +366,9 @@ export default {
         });
     },
     deleteAccession() {
-      const store = useStore();
       const id = this.accession_id;
 
-      axios.post(`${store.appURL}/admin.php`, { delete: id }, { withCredentials: true })
+      axios.post(`${useStore().appURL}/admin.php`, { delete: id }, { withCredentials: true })
         .then(response => {
           console.log('Accession deleted:', response.data);
           this.fetchBooks();
@@ -387,7 +384,7 @@ export default {
     },
     populateForm(book) {
       this.accession_number = book.accession_number;
-      this.date_received = book.date_received;
+      this.date_received = new Date(book.date_received);
       this.source_of_fund = book.source_of_fund;
       this.cost_price = book.cost_price;
       this.remarks = book.remarks;
