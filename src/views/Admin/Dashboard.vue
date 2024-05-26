@@ -206,11 +206,16 @@
               :search="bookSearch"
               class="elevation-1"
             ></v-data-table>
-            <v-row v-if="loadingBooks" class="d-flex justify-center align-center mt-4">
-              <v-progress-circular
-                indeterminate
-                color="primary"
-              ></v-progress-circular>
+            <v-row v-if="loadingBooks" class="d-flex flex-column justify-center align-center text-center mt-4">
+              <v-col>
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                ></v-progress-circular>
+              </v-col>
+              <v-col>
+                <p>Loading...</p>
+              </v-col>
             </v-row>
           </v-card-text>
         </v-card>
@@ -378,13 +383,12 @@ export default {
           console.error('Error deleting accession:', error);
         });
     },
-    searchAccession() {
-      this.loadingAccessions = true;
-      this.loadingAccessions = false;
-    },
     populateForm(book) {
       this.accession_number = book.accession_number;
       this.date_received = new Date(book.date_received);
+      if (isNaN(this.date_received.getTime())) {
+        this.date_received = null; // Handle invalid date
+      }
       this.source_of_fund = book.source_of_fund;
       this.cost_price = book.cost_price;
       this.remarks = book.remarks;
@@ -427,12 +431,6 @@ export default {
       this.publicationPlace = '';
       this.call_no = '';
       this.accession_id = null;
-    }
-  },
-
-  watch: {
-    accessionSearch(newSearch) {
-      this.searchAccession();
     }
   },
 
