@@ -1,6 +1,7 @@
 <?php
 
 require_once 'User.php';
+require_once 'Accession.php';
 
 class Admin extends User
 {
@@ -14,7 +15,6 @@ class Admin extends User
     {
         parent::__construct($username, $password, 'admin');
     }
-
 
     /***************************************************************************
      * Execute find
@@ -32,7 +32,6 @@ class Admin extends User
             return false;
     }
 
-
     /***************************************************************************
      * Find Admin by id
      *
@@ -47,7 +46,6 @@ class Admin extends User
         return self::executeFind($stmt);
     }
 
-
     /***************************************************************************
      * Convert Admin object to array
      *
@@ -58,7 +56,6 @@ class Admin extends User
     {
         return parent::toArray($append);
     }
-
 
     /***************************************************************************
      * Get all admins as array of objects
@@ -80,7 +77,6 @@ class Admin extends User
         return $admins;
     }
 
-
     /***************************************************************************
      * Get all admins as array of arrays
      *
@@ -95,7 +91,42 @@ class Admin extends User
         return $admins;
     }
 
+    /***************************************************************************
+     * Save an accession record
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function saveAccession($data)
+    {
+        $accession = new Accession($data);
+        return $accession->save();
+    }
 
+    /***************************************************************************
+     * Load an accession record by id
+     *
+     * @param int $id
+     * @return Accession|false
+     */
+    public function loadAccession($id)
+    {
+        return Accession::findById($id);
+    }
 
-
+    /***************************************************************************
+     * Delete an accession record by id
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function deleteAccession($id)
+    {
+        $accession = Accession::findById($id);
+        if ($accession) {
+            return $accession->destroy();
+        }
+        return false;
+    }
 }
+?>
