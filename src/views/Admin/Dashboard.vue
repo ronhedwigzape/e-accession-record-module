@@ -2,7 +2,7 @@
   <TopNavigationBar/>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="8">
         <v-card>
           <v-card-title
             class="bg-deep-purple-darken-4 mb-4 text-center d-flex justify-center align-center !tw-items-center"
@@ -16,22 +16,32 @@
                 <v-card elevation="0">
                   <v-card-text>
                     <v-row>
-                      <v-col cols="12">
+                      <v-col cols="6">
                         <v-date-input
-                          v-model="useAccessionStore().date_received"
-                          label="Date Received"
+                          v-model="useAccessionStore().dateaccession"
+                          label="Date Accessioned"
                           variant="outlined"
                           density="compact">
                         </v-date-input>
                       </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="useAccessionStore().accession_number"
+                          label="Accession Number"
+                          variant="outlined"
+                          density="compact"
+                          hint="e.g. 006201AV - For AV"
+                        >
+                        </v-text-field>
+                      </v-col>
                     </v-row>
                     <v-row>
-                      <v-col cols="12" md="6">
+                      <v-col cols="6">
                         <v-text-field v-model="useAccessionStore().copy" label="No. of Copies" variant="outlined" density="compact"></v-text-field>
                       </v-col>
-                      <v-col cols="12" md="6">
+                      <v-col cols="6">
                         <v-radio-group v-model="useAccessionStore().type" inline>
-                          <v-radio label="Book" value="Book"></v-radio>
+                          <v-radio label="Book" value="BK"></v-radio>
                           <v-radio label="UM" value="UM"></v-radio>
                           <v-radio label="AV" value="AV"></v-radio>
                         </v-radio-group>
@@ -48,37 +58,40 @@
                       </v-col>
                     </v-row>
                     <v-row>
-                      <v-col cols="12" md="6">
+                      <v-col cols="6">
                         <v-text-field v-model="useAccessionStore().publisher" label="Publisher" variant="outlined" density="compact"></v-text-field>
                       </v-col>
-                      <v-col cols="12" md="6">
+                      <v-col cols="6">
                         <v-text-field v-model="useAccessionStore().publicationPlace" label="Place of Publication" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
-                      <v-col cols="6" md="4">
-                        <v-text-field v-model="useAccessionStore().copyright" label="Copyright" variant="outlined" density="compact"></v-text-field>
+                      <v-col cols="4">
+                        <v-text-field v-model="useAccessionStore().volumes" label="Volume" variant="outlined" density="compact" hint="e.g. 1 of 3"></v-text-field>
                       </v-col>
-                      <v-col cols="6" md="4">
-                        <v-text-field v-model="useAccessionStore().volumes" label="Volume" variant="outlined" density="compact"></v-text-field>
-                      </v-col>
-                      <v-col cols="6" md="4">
-                        <v-text-field v-model="useAccessionStore().edition" label="Edition" variant="outlined" density="compact"></v-text-field>
+                      <v-col cols="8">
+                        <v-text-field v-model="useAccessionStore().isbn" label="ISBN" variant="outlined" density="compact" hint="e.g. 9789814732109"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
-                      <v-col cols="6" md="6">
-                        <v-text-field v-model="useAccessionStore().pages" label="Pages" variant="outlined" density="compact"></v-text-field>
+                      <v-col cols="3">
+                        <v-text-field v-model="useAccessionStore().copyright" label="Copyright" variant="outlined" density="compact" hint="e.g. Cengag"></v-text-field>
                       </v-col>
-                      <v-col cols="6" md="6">
-                        <v-text-field v-model="useAccessionStore().cost_price" label="Cost Price" variant="outlined" density="compact"></v-text-field>
+                      <v-col cols="3">
+                        <v-text-field v-model="useAccessionStore().edition" label="Edition" variant="outlined" density="compact" hint="e.g. 1st"></v-text-field>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-text-field v-model="useAccessionStore().pages" label="Pages" variant="outlined" density="compact" hint="e.g. 500"></v-text-field>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-text-field v-model="useAccessionStore().cost_price" label="Cost Price" variant="outlined" density="compact" hint="e.g. 30.00"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
-                      <v-col cols="12" md="6">
-                        <v-text-field v-model="useAccessionStore().source_of_fund" label="Source of Fund" variant="outlined" density="compact"></v-text-field>
+                      <v-col cols="6">
+                        <v-text-field v-model="useAccessionStore().source_of_fund" label="Source of Fund" variant="outlined" density="compact" hint="e.g. Library Fund"></v-text-field>
                       </v-col>
-                      <v-col cols="12" md="6">
+                      <v-col cols="6">
                         <v-select
                           v-model="useAccessionStore().department"
                           clearable
@@ -194,7 +207,7 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="4">
         <v-card>
           <v-card-title
             class="bg-deep-purple-darken-4 mb-4 text-center d-flex justify-center align-center"
@@ -203,7 +216,13 @@
             List of Books
           </v-card-title>
           <v-card-text>
-            <v-text-field v-model="useAccessionStore().bookSearch" variant="outlined" label="Search" outlined dense solo-inverted clearable append-icon="mdi-magnify"></v-text-field>
+            <v-text-field
+              v-model="useAccessionStore().bookSearch"
+              variant="outlined"
+              label="Search"
+              clearable
+              append-icon="mdi-magnify"
+            />
             <v-data-table
               v-model:items-per-page="useAccessionStore().itemsPerPage"
               :headers="useAccessionStore().headers"
@@ -232,7 +251,7 @@
 <script setup>
 import { useAccessionStore } from '@/stores/store-accession';
 import TopNavigationBar from "@/components/navbars/TopNavigationBar.vue";
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 
 onMounted(() => {
   useAccessionStore().fetchBooks();

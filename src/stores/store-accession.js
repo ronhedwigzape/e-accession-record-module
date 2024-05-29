@@ -11,12 +11,12 @@ export const useAccessionStore = defineStore('accession', {
     loadingBooks: false,
     loadingAccessions: false,
     departments: [
-      { name: 'CAS', description: '' },
-      { name: 'CTDE', description: '' },
-      { name: 'CCS', description: '' },
-      { name: 'CEA', description: '' },
-      { name: 'CHS', description: '' },
-      { name: 'CTHBM', description: '' },
+      { name: 'CAS', description: 'College of Arts and Sciences' },
+      { name: 'CTDE', description: 'College of Technological and Developmental Education' },
+      { name: 'CCS', description: 'College of Computer Studies' },
+      { name: 'CEA', description: 'College of Engineering and Architecture' },
+      { name: 'CHS', description: 'College of Health and Sciences' },
+      { name: 'CTHBM', description: 'College of Tourism, Hospitality, and Business Management' },
       { name: 'GRD', description: '' },
       { name: 'DON', description: 'Donated Books' },
       { name: 'FIL', description: 'Filipiniana' },
@@ -28,25 +28,21 @@ export const useAccessionStore = defineStore('accession', {
     books: [],
     headers: [
       { title: 'Accession Number', value: 'accession_number', align: 'start', sortable: true },
-      { title: 'Date Received', value: 'date_received', align: 'start', sortable: true },
-      { title: 'Source of Fund', value: 'source_of_fund', align: 'start', sortable: true },
-      { title: 'Cost Price', value: 'cost_price', align: 'start', sortable: true },
-      { title: 'Remarks', value: 'remarks', align: 'start', sortable: true },
+      { title: 'Date Accessioned', value: 'dateaccession', align: 'start', sortable: true },
+      { title: 'Volume', value: 'volumes', align: 'start', sortable: true },
       { title: 'ISBN', value: 'isbn', align: 'start', sortable: true },
-      { title: 'Date Accession', value: 'dateaccession', align: 'start', sortable: true },
-      { title: 'Title', value: 'title', align: 'start', sortable: true },
       { title: 'Author', value: 'author', align: 'start', sortable: true },
+      { title: 'Title', value: 'title', align: 'start', sortable: true },
       { title: 'Edition', value: 'edition', align: 'start', sortable: true },
-      { title: 'Volumes', value: 'volumes', align: 'start', sortable: true },
       { title: 'Pages', value: 'pages', align: 'start', sortable: true },
       { title: 'Copyright', value: 'copyright', align: 'start', sortable: true },
       { title: 'Publisher', value: 'publisher', align: 'start', sortable: true },
+      { title: 'Place of Publication', value: 'publicationPlace', align: 'start', sortable: true },
       { title: 'Department', value: 'department', align: 'start', sortable: true },
-      { title: 'Copy', value: 'copy', align: 'start', sortable: true },
-      { title: 'Encoder', value: 'encoder', align: 'start', sortable: true },
       { title: 'Type', value: 'type', align: 'start', sortable: true },
-      { title: 'Publication Place', value: 'publicationPlace', align: 'start', sortable: true },
-      { title: 'Call Number', value: 'call_no', align: 'start', sortable: true }
+      { title: 'Cost Price', value: 'cost_price', align: 'start', sortable: true },
+      { title: 'Source of Fund', value: 'source_of_fund', align: 'start', sortable: true },
+      { title: 'Remarks', value: 'remarks', align: 'start', sortable: true }
     ],
     accession_number: '',
     date_received: null,
@@ -54,7 +50,7 @@ export const useAccessionStore = defineStore('accession', {
     cost_price: '',
     remarks: '',
     isbn: '',
-    dateaccession: '',
+    dateaccession: null,
     title: '',
     author: '',
     edition: '',
@@ -74,15 +70,19 @@ export const useAccessionStore = defineStore('accession', {
   getters: {
     filteredBooks(state) {
       return state.books.filter(book => {
-        return book.title.toLowerCase().includes(state.bookSearch.toLowerCase()) ||
-          book.author.toLowerCase().includes(state.bookSearch.toLowerCase());
+        const title = book.title ? book.title.toLowerCase() : '';
+        const author = book.author ? book.author.toLowerCase() : '';
+        const search = state.bookSearch ? state.bookSearch.toLowerCase() : '';
+        return title.includes(search) || author.includes(search);
       });
     },
     filteredAccessions(state) {
       return state.books.filter(book => {
-        return book.accession_number.toLowerCase().includes(state.accessionSearch.toLowerCase()) ||
-          book.title.toLowerCase().includes(state.accessionSearch.toLowerCase()) ||
-          book.author.toLowerCase().includes(state.accessionSearch.toLowerCase());
+        const accessionNumber = book.accession_number ? book.accession_number.toLowerCase() : '';
+        const title = book.title ? book.title.toLowerCase() : '';
+        const author = book.author ? book.author.toLowerCase() : '';
+        const search = state.accessionSearch ? state.accessionSearch.toLowerCase() : '';
+        return accessionNumber.includes(search) || title.includes(search) || author.includes(search);
       });
     }
   },
@@ -165,7 +165,10 @@ export const useAccessionStore = defineStore('accession', {
       this.cost_price = book.cost_price;
       this.remarks = book.remarks;
       this.isbn = book.isbn;
-      this.dateaccession = book.dateaccession;
+      this.dateaccession = new Date(book.dateaccession);
+      if (isNaN(this.dateaccession.getTime())) {
+        this.dateaccession = null;
+      }
       this.title = book.title;
       this.author = book.author;
       this.edition = book.edition;
