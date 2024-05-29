@@ -22,15 +22,15 @@
                         color="green"
                         variant="text"
                         @click="dialog1 = false"
-                        :disabled="signingOut"
+                        :disabled="useAuthStore().signingOut"
                     >
                         Go Back
                     </v-btn>
                     <v-btn
                         color="red"
                         variant="tonal"
-                        @click="signOut"
-                        :loading="signingOut"
+                        @click="useAuthStore().signOut"
+                        :loading="useAuthStore().signingOut"
                     >
                         Sign Out
                     </v-btn>
@@ -41,44 +41,11 @@
 </template>
 
 <script setup>
-import $ from "jquery";
 import {ref} from "vue";
-import {useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/store-auth";
-import {useStore} from "@/stores/store";
 
 const dialog = ref(false);
 const dialog1 = ref(false);
-const signingOut = ref(false);
-const signedOut = ref(false);
-
-const store = useStore();
-const authStore = useAuthStore();
-const router = useRouter();
-
-const signOut = async () => {
-    signingOut.value = true;
-    await $.ajax({
-        url: `${store.appURL}/index.php`,
-        type: 'POST',
-        xhrFields: {
-            withCredentials: true
-        },
-        data: {
-            signOut: signedOut.value
-        },
-        success: (data) => {
-            data = JSON.parse(data);
-            authStore.setUser(data.user = null);
-            router.push('/');
-            signingOut.value = false;
-        },
-        error: (error) => {
-            alert(`ERROR ${error.status}: ${error.statusText}`);
-            signingOut.value = false;
-        },
-    });
-};
 
 </script>
 
