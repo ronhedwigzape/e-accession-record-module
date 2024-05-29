@@ -49,7 +49,7 @@ export const useAccessionStore = defineStore('accession', {
       { title: 'Call Number', value: 'call_no', align: 'start', sortable: true }
     ],
     accession_number: '',
-    date_received: '',
+    date_received: null,
     source_of_fund: '',
     cost_price: '',
     remarks: '',
@@ -159,7 +159,7 @@ export const useAccessionStore = defineStore('accession', {
       this.accession_number = book.accession_number;
       this.date_received = new Date(book.date_received);
       if (isNaN(this.date_received.getTime())) {
-        this.date_received = null; // Handle invalid date
+        this.date_received = null;
       }
       this.source_of_fund = book.source_of_fund;
       this.cost_price = book.cost_price;
