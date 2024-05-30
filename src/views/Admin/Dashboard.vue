@@ -114,7 +114,7 @@
                     <v-btn variant="tonal" @click="useAccessionStore().resetForm">Reset</v-btn>
                     <v-btn variant="tonal" color="primary" @click="useAccessionStore().saveAccession">Save</v-btn>
                     <v-btn variant="tonal" color="error" @click="useAccessionStore().deleteAccession">Delete</v-btn>
-<!--                    <v-btn variant="tonal" color="secondary" @click="fillSampleData">Fill Sample Data</v-btn>-->
+                    <v-btn variant="tonal" color="secondary" @click="fillSampleData">Fill Sample Data</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -285,7 +285,7 @@ function fillSampleData() {
   store.pages = '500';
   store.copyright = '2024';
   store.publisher = 'Sample Publisher';
-  store.department = 'CAS';
+  store.department = store.departments.find(dept => dept.name === 'CAS');
   store.copy = '1';
   store.encoder = 'Sample Encoder';
   store.type = 'AV';
