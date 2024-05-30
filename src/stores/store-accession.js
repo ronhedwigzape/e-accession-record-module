@@ -62,6 +62,7 @@ export const useAccessionStore = defineStore('accession', {
     copyright: '',
     publisher: '',
     department: '',
+    reportDepartment: '',
     copy: '',
     encoder: '',
     type: '',
@@ -226,7 +227,10 @@ export const useAccessionStore = defineStore('accession', {
       this.pages = book.pages;
       this.copyright = book.copyright;
       this.publisher = book.publisher;
-      this.department = this.departments.find(dept => dept.name === book.department) || { name: book.department, description: '' };
+      this.department = this.departments.find(dept => dept.name === book.department) || {
+        name: book.department,
+        description: ''
+      };
       this.copy = book.copy;
       this.encoder = book.encoder;
       this.type = book.type;
@@ -279,7 +283,7 @@ export const useAccessionStore = defineStore('accession', {
     generateReport() {
       const data = {
         type: this.type,
-        department: this.department.name,
+        department: this.reportDepartment.name,
         start_date: this.model ? this.model[0] : null,
         end_date: this.model ? this.model[1] : null
       };

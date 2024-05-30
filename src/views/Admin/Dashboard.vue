@@ -261,7 +261,7 @@
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-select
-                    v-model="useAccessionStore().department"
+                    v-model="useAccessionStore().reportDepartment"
                     clearable
                     label="Department"
                     :items="useAccessionStore().departments"
