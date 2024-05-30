@@ -283,8 +283,8 @@ class Accession extends App
         $sheet->mergeCells('A6:M6');
 
         $headers = [
-            'Accession Number', 'DATE RECEIVED', 'CLASS', 'AUTHOR', 'TITLE OF BOOK', 'EDITION', 'VOLUMES', 'PAGES',
-            'SOURCE OF FUND', 'COST', 'PUBLISHER', 'YEAR', 'REMARKS'
+            'Accession Number', 'DATE RECEIVED', 'AUTHOR', 'CLASS', 'TITLE OF BOOK', 'EDITION', 'VOLUMES', 'PAGES',
+            'SOURCE OF FUND', 'COST', 'YEAR', 'PUBLISHER', 'REMARKS'
         ];
 
         $columnIndex = 'A';
@@ -299,16 +299,16 @@ class Accession extends App
             $columnIndex = 'A';
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['accession_number']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['date_received']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['type']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['author']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['type']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['title']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['edition']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['volumes']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['pages']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['source_of_fund']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['cost_price']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['publisher']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['dateaccession']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['publisher']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['remarks']);
             $rowIndex++;
         }
