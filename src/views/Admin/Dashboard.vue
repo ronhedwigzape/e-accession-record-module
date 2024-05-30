@@ -2,7 +2,7 @@
   <TopNavigationBar/>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="6">
         <v-card>
           <v-card-title
             class="bg-deep-purple-darken-4 mb-4 text-center d-flex justify-center align-center !tw-items-center"
@@ -185,7 +185,7 @@
                     <v-btn variant="tonal" @click="useAccessionStore().resetForm">Reset</v-btn>
                     <v-btn variant="tonal" color="primary" @click="useAccessionStore().saveAccession">Save</v-btn>
                     <v-btn variant="tonal" color="error" @click="useAccessionStore().deleteAccession">Delete</v-btn>
-                    <v-btn variant="tonal" color="secondary" @click="fillSampleData">Fill Sample Data</v-btn>
+<!--                    <v-btn variant="tonal" color="secondary" @click="fillSampleData">Fill Sample Data</v-btn>-->
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -285,7 +285,7 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-card>
           <v-card-title
             class="bg-deep-purple-darken-4 mb-4 text-center d-flex justify-center align-center"
