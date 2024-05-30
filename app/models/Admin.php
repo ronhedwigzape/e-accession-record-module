@@ -115,6 +115,26 @@ class Admin extends User
     }
 
     /***************************************************************************
+     * Load all accession records
+     *
+     * @return Accession[]
+     */
+    public function loadAllAccessions()
+    {
+        return Accession::all();
+    }
+
+    /***************************************************************************
+     * Load all accession records as rows
+     *
+     * @return array
+     */
+    public function loadAllAccessionRows()
+    {
+        return Accession::rows();
+    }
+
+    /***************************************************************************
      * Delete an accession record by id
      *
      * @param int $id
