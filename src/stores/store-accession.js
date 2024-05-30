@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import $ from 'jquery';
-import { useStore } from '@/stores/store';
+import {useStore} from '@/stores/store';
 
 export const useAccessionStore = defineStore('accession', {
   state: () => ({
@@ -282,40 +282,12 @@ export const useAccessionStore = defineStore('accession', {
       this.accession_id = null;
     },
     generateReport() {
-      const data = {
-        type: this.reportType,
-        department: this.reportDepartment.name,
-        start_date: this.model ? this.model[0] : null,
-        end_date: this.model ? this.model[1] : null
-      };
+      const type = this.reportType;
+      const department = this.reportDepartment.name;
+      const startDate = this.model ? this.model[0].toISOString() : null;
+      const endDate = this.model ? this.model[1].toISOString() : null;
 
-      $.ajax({
-        url: `${useStore().appURL}/admin.php`,
-        type: 'POST',
-        xhrFields: {
-          withCredentials: true
-        },
-        data: {
-          generate_report: JSON.stringify(data)
-        },
-        success: (response) => {
-          const link = document.createElement('a');
-          link.href = response.filePath;
-          link.download = 'accession_report.xlsx';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          this.snackbarMessage = 'Report generated successfully.';
-          this.snackbarColor = 'success';
-          this.snackbar = true;
-        },
-        error: (error) => {
-          console.error('Error generating report:', error);
-          this.snackbarMessage = 'Failed to generate report.';
-          this.snackbarColor = 'error';
-          this.snackbar = true;
-        }
-      });
+      window.location.href = `${useStore().appURL}/admin.php?generateReport=true&type=${type}&department=${department}&start_date=${startDate}&end_date=${endDate}`;
     }
   }
 });

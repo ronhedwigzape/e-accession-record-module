@@ -213,7 +213,7 @@ class Accession extends App
      * @param string $department
      * @param string $startDate
      * @param string $endDate
-     * @return string
+     * @return void
      */
     public static function generateReport($type, $department, $startDate, $endDate)
     {
@@ -235,6 +235,9 @@ class Accession extends App
         }
 
         if ($startDate && $endDate) {
+            // Convert date strings to MySQL date format
+            $startDate = date('Y-m-d', strtotime($startDate));
+            $endDate = date('Y-m-d', strtotime($endDate));
             $query .= " AND dateaccession BETWEEN ? AND ?";
             $params[] = $startDate;
             $params[] = $endDate;
@@ -258,56 +261,56 @@ class Accession extends App
         $sheet = $spreadsheet->getActiveSheet();
 
         // Add header image and description
-        $drawing = new Drawing();
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
         $drawing->setName('CSPC Logo');
         $drawing->setDescription('CSPC Logo');
-        $drawing->setPath('path/to/cspc-logo.png'); // Path to the logo image
+        $drawing->setPath('../assets/cspc_logo.png');
         $drawing->setHeight(100);
         $drawing->setCoordinates('A1');
         $drawing->setWorksheet($sheet);
 
-        $sheet->setCellValue('A3', 'Republic of the Philippines')
-            ->setCellValue('A4', 'Camarines Sur Polytechnic Colleges')
-            ->setCellValue('A5', 'Nabua, Camarines Sur');
+        $sheet->setCellValue('B2', 'Republic of the Philippines')
+            ->setCellValue('B3', 'CAMARINES SUR POLYTECHNIC COLLEGES')
+            ->setCellValue('B4', 'Nabua, Camarines Sur');
 
         // Merge cells for the description
-        $sheet->mergeCells('A3:H3');
-        $sheet->mergeCells('A4:H4');
-        $sheet->mergeCells('A5:H5');
+        $sheet->mergeCells('B2:H2');
+        $sheet->mergeCells('B3:H3');
+        $sheet->mergeCells('B4:H4');
 
         // Add table headers
-        $sheet->setCellValue('A7', 'Accession Record');
-        $sheet->mergeCells('A7:N7');
+        $sheet->setCellValue('A6', 'ACCESSION RECORD');
+        $sheet->mergeCells('A6:M6');
 
         $headers = [
-            'Accession Number', 'Date Received', 'Class', 'Author', 'Title of Book', 'Edition', 'Volumes', 'Pages',
-            'Source of Fund', 'Cost', 'Publisher', 'Year', 'Remarks'
+            'Accession Number', 'DATE RECEIVED', 'CLASS', 'AUTHOR', 'TITLE OF BOOK', 'EDITION', 'VOLUMES', 'PAGES',
+            'SOURCE OF FUND', 'COST', 'PUBLISHER', 'YEAR', 'REMARKS'
         ];
 
-        $col = 'A';
-        $row = 8;
+        $columnIndex = 'A';
         foreach ($headers as $header) {
-            $sheet->setCellValue($col . $row, $header);
-            $col++;
+            $sheet->setCellValue($columnIndex . '7', $header);
+            $columnIndex++;
         }
 
         // Add data rows
-        $row = 9;
+        $rowIndex = 8;
         foreach ($accessions as $accession) {
-            $sheet->setCellValue('A' . $row, $accession['accession_number'])
-                ->setCellValue('B' . $row, $accession['date_received'])
-                ->setCellValue('C' . $row, $accession['type'])
-                ->setCellValue('D' . $row, $accession['author'])
-                ->setCellValue('E' . $row, $accession['title'])
-                ->setCellValue('F' . $row, $accession['edition'])
-                ->setCellValue('G' . $row, $accession['volumes'])
-                ->setCellValue('H' . $row, $accession['pages'])
-                ->setCellValue('I' . $row, $accession['source_of_fund'])
-                ->setCellValue('J' . $row, $accession['cost_price'])
-                ->setCellValue('K' . $row, $accession['publisher'])
-                ->setCellValue('L' . $row, $accession['dateaccession'])
-                ->setCellValue('M' . $row, $accession['remarks']);
-            $row++;
+            $columnIndex = 'A';
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['accession_number']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['date_received']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['type']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['author']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['title']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['edition']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['volumes']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['pages']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['source_of_fund']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['cost_price']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['publisher']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['dateaccession']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['remarks']);
+            $rowIndex++;
         }
 
         // Set column widths
@@ -315,13 +318,27 @@ class Accession extends App
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        // Save Excel file
-        $writer = new Xlsx($spreadsheet);
-        $filePath = __DIR__ . '/../../reports/accession_report.xlsx'; // Adjust the path as needed
-        $writer->save($filePath);
+        // Apply styles
+        $headerStyleArray = [
+            'font' => [
+                'bold' => true,
+                'color' => ['argb' => 'FFFFFFFF'],
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FF4F81BD'],
+            ],
+        ];
 
-        // Return file path for download
-        return $filePath;
+        $sheet->getStyle('A7:M7')->applyFromArray($headerStyleArray);
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'accession_report_' . date('Ymd') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        $writer->save('php://output');
+        exit();
     }
 }
 ?>

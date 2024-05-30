@@ -54,26 +54,17 @@ else {
             }
         }
 
-        else if (isset($_POST['generate_report'])) {
-            $data = json_decode($_POST['generate_report'], true);
-            $type = $data['type'];
-            $department = $data['department'];
-            $startDate = $data['start_date'];
-            $endDate = $data['end_date'];
+        else if (isset($_GET['generateReport'])) {
+            $type = $_GET['type'] ?? null;
+            $department = $_GET['department'] ?? null;
+            $startDate = $_GET['start_date'] ?? null;
+            $endDate = $_GET['end_date'] ?? null;
 
-            $filePath = Accession::generateReport($type, $department, $startDate, $endDate);
-
-            // Serve the file for download
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment; filename="accession_report.xlsx"');
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($filePath));
-            readfile($filePath);
-            exit;
+            try {
+                Accession::generateReport($type, $department, $startDate, $endDate);
+            } catch (Exception $e) {
+                App::returnError('HTTP/1.1 500', 'Error generating report: ' . $e->getMessage());
+            }
         }
 
         else {
