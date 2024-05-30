@@ -192,19 +192,29 @@ export const useAccessionStore = defineStore('accession', {
       });
     },
     populateForm(book) {
+      const parseDate = (dateString) => {
+        if (!dateString) return null;
+        // Remove trailing period if present
+        dateString = dateString.replace(/\.$/, '');
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+          // Handle date string without time part
+          const parts = dateString.split('-');
+          if (parts.length === 3) {
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+          }
+          return null;
+        }
+        return date;
+      };
+
       this.accession_number = book.accession_number;
-      this.date_received = new Date(book.date_received);
-      if (isNaN(this.date_received.getTime())) {
-        this.date_received = null;
-      }
+      this.date_received = parseDate(book.date_received);
       this.source_of_fund = book.source_of_fund;
       this.cost_price = book.cost_price;
       this.remarks = book.remarks;
       this.isbn = book.isbn;
-      this.dateaccession = new Date(book.dateaccession);
-      if (isNaN(this.dateaccession.getTime())) {
-        this.dateaccession = null;
-      }
+      this.dateaccession = parseDate(book.dateaccession);
       this.title = book.title;
       this.author = book.author;
       this.edition = book.edition;
@@ -222,12 +232,12 @@ export const useAccessionStore = defineStore('accession', {
     },
     resetForm() {
       this.accession_number = '';
-      this.date_received = '';
+      this.date_received = null;
       this.source_of_fund = '';
       this.cost_price = '';
       this.remarks = '';
       this.isbn = '';
-      this.dateaccession = '';
+      this.dateaccession = null;
       this.title = '';
       this.author = '';
       this.edition = '';
