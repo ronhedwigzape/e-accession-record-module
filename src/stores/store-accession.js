@@ -10,6 +10,9 @@ export const useAccessionStore = defineStore('accession', {
     itemsPerPage: 10,
     loadingBooks: false,
     loadingAccessions: false,
+    snackbar: false,
+    snackbarMessage: '',
+    snackbarColor: '',
     departments: [
       { name: 'CAS', description: 'College of Arts and Sciences' },
       { name: 'CTDE', description: 'College of Technological and Developmental Education' },
@@ -159,11 +162,17 @@ export const useAccessionStore = defineStore('accession', {
         },
         success: (response) => {
           console.log('Accession saved:', response);
+          this.snackbarMessage = 'Accession record saved successfully.';
+          this.snackbarColor = 'success';
+          this.snackbar = true;
           this.fetchBooks();
           this.resetForm();
         },
         error: (error) => {
           console.error('Error saving accession:', error);
+          this.snackbarMessage = 'Failed to save accession record.';
+          this.snackbarColor = 'error';
+          this.snackbar = true;
           if (error.responseJSON) {
             console.error('Response data:', error.responseJSON);
           } else if (error.responseText) {
@@ -188,11 +197,17 @@ export const useAccessionStore = defineStore('accession', {
         },
         success: (response) => {
           console.log('Accession deleted:', response);
+          this.snackbarMessage = 'Accession record deleted successfully.';
+          this.snackbarColor = 'success';
+          this.snackbar = true;
           this.fetchBooks();
           this.resetForm();
         },
         error: (error) => {
           console.error('Error deleting accession:', error);
+          this.snackbarMessage = 'Failed to delete accession record.';
+          this.snackbarColor = 'error';
+          this.snackbar = true;
         }
       });
     },
