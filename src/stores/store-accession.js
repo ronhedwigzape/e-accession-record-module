@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import $ from 'jquery';
 import { useStore } from '@/stores/store';
 
 export const useAccessionStore = defineStore('accession', {
@@ -96,16 +96,25 @@ export const useAccessionStore = defineStore('accession', {
     },
     fetchBooks() {
       this.loadingBooks = true;
-      axios.get(`${useStore().appURL}/admin.php?load`, { withCredentials: true })
-        .then(response => {
-          this.books = response.data;
-        })
-        .catch(error => {
+      $.ajax({
+        url: `${useStore().appURL}/admin.php`,
+        type: 'GET',
+        xhrFields: {
+          withCredentials: true
+        },
+        data: {
+          load: ''
+        },
+        success: (response) => {
+          this.books = JSON.parse(response);
+        },
+        error: (error) => {
           console.error('Error fetching books:', error);
-        })
-        .finally(() => {
+        },
+        complete: () => {
           this.loadingBooks = false;
-        });
+        }
+      });
     },
     saveAccession() {
       const data = {
@@ -123,7 +132,7 @@ export const useAccessionStore = defineStore('accession', {
         pages: this.pages,
         copyright: this.copyright,
         publisher: this.publisher,
-        department: this.department,
+        department: this.department.name,
         copy: this.copy,
         encoder: this.encoder,
         type: this.type,
@@ -132,28 +141,55 @@ export const useAccessionStore = defineStore('accession', {
         id: this.accession_id
       };
 
-      axios.post(`${useStore().appURL}/admin.php`, { save: JSON.stringify(data) }, { withCredentials: true })
-        .then(response => {
-          console.log('Accession saved:', response.data);
+      console.log('Saving accession with data:', data);
+
+      $.ajax({
+        url: `${useStore().appURL}/admin.php`,
+        type: 'POST',
+        xhrFields: {
+          withCredentials: true
+        },
+        data: {
+          save: JSON.stringify(data)
+        },
+        success: (response) => {
+          console.log('Accession saved:', response);
           this.fetchBooks();
           this.resetForm();
-        })
-        .catch(error => {
+        },
+        error: (error) => {
           console.error('Error saving accession:', error);
-        });
+          if (error.responseJSON) {
+            console.error('Response data:', error.responseJSON);
+          } else if (error.responseText) {
+            console.error('Response text:', error.responseText);
+          } else {
+            console.error('Error message:', error.message);
+          }
+        }
+      });
     },
     deleteAccession() {
       const id = this.accession_id;
 
-      axios.post(`${useStore().appURL}/admin.php`, { delete: id }, { withCredentials: true })
-        .then(response => {
-          console.log('Accession deleted:', response.data);
+      $.ajax({
+        url: `${useStore().appURL}/admin.php`,
+        type: 'POST',
+        xhrFields: {
+          withCredentials: true
+        },
+        data: {
+          delete: id
+        },
+        success: (response) => {
+          console.log('Accession deleted:', response);
           this.fetchBooks();
           this.resetForm();
-        })
-        .catch(error => {
+        },
+        error: (error) => {
           console.error('Error deleting accession:', error);
-        });
+        }
+      });
     },
     populateForm(book) {
       this.accession_number = book.accession_number;
@@ -176,7 +212,7 @@ export const useAccessionStore = defineStore('accession', {
       this.pages = book.pages;
       this.copyright = book.copyright;
       this.publisher = book.publisher;
-      this.department = book.department;
+      this.department = this.departments.find(dept => dept.name === book.department);
       this.copy = book.copy;
       this.encoder = book.encoder;
       this.type = book.type;
@@ -209,3 +245,4 @@ export const useAccessionStore = defineStore('accession', {
     }
   }
 });
+
