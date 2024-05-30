@@ -106,7 +106,12 @@ export const useAccessionStore = defineStore('accession', {
           load: ''
         },
         success: (response) => {
-          this.books = JSON.parse(response);
+          const books = JSON.parse(response);
+          this.books = books.map(book => ({
+            ...book,
+            date_received: this.parseDate(book.date_received),
+            dateaccession: this.parseDate(book.dateaccession)
+          }));
         },
         error: (error) => {
           console.error('Error fetching books:', error);
@@ -192,29 +197,13 @@ export const useAccessionStore = defineStore('accession', {
       });
     },
     populateForm(book) {
-      const parseDate = (dateString) => {
-        if (!dateString) return null;
-        // Remove trailing period if present
-        dateString = dateString.replace(/\.$/, '');
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) {
-          // Handle date string without time part
-          const parts = dateString.split('-');
-          if (parts.length === 3) {
-            return new Date(parts[0], parts[1] - 1, parts[2]);
-          }
-          return null;
-        }
-        return date;
-      };
-
       this.accession_number = book.accession_number;
-      this.date_received = parseDate(book.date_received);
+      this.date_received = this.parseDate(book.date_received);
       this.source_of_fund = book.source_of_fund;
       this.cost_price = book.cost_price;
       this.remarks = book.remarks;
       this.isbn = book.isbn;
-      this.dateaccession = parseDate(book.dateaccession);
+      this.dateaccession = this.parseDate(book.dateaccession);
       this.title = book.title;
       this.author = book.author;
       this.edition = book.edition;
@@ -229,6 +218,25 @@ export const useAccessionStore = defineStore('accession', {
       this.publicationPlace = book.publicationPlace;
       this.call_no = book.call_no;
       this.accession_id = book.id;
+    },
+    parseDate(dateString) {
+      if (!dateString) return null;
+      // Remove trailing period if present
+      dateString = dateString.replace(/\.$/, '');
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        // Handle date string without time part
+        const parts = dateString.split('-');
+        if (parts.length === 3) {
+          return new Date(parts[0], parts[1] - 1, parts[2]);
+        }
+        return null;
+      }
+      // Format the date to YYYY-MM-DD
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     },
     resetForm() {
       this.accession_number = '';
@@ -255,4 +263,3 @@ export const useAccessionStore = defineStore('accession', {
     }
   }
 });
-
