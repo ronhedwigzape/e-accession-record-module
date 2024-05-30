@@ -1,6 +1,10 @@
 <?php
 
-require_once 'App.php';
+require_once __DIR__ . '/../../vendor/autoload.php'; // Adjust the path as needed
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class Accession extends App
 {
@@ -200,6 +204,124 @@ class Accession extends App
         }
 
         return $arr;
+    }
+
+    /***************************************************************************
+     * Generate report based on filters
+     *
+     * @param string $type
+     * @param string $department
+     * @param string $startDate
+     * @param string $endDate
+     * @return string
+     */
+    public static function generateReport($type, $department, $startDate, $endDate)
+    {
+        $accession = new Accession();
+        $query = "SELECT * FROM $accession->table WHERE 1=1";
+        $params = [];
+        $types = '';
+
+        if ($type) {
+            $query .= " AND type = ?";
+            $params[] = $type;
+            $types .= 's';
+        }
+
+        if ($department) {
+            $query .= " AND department = ?";
+            $params[] = $department;
+            $types .= 's';
+        }
+
+        if ($startDate && $endDate) {
+            $query .= " AND dateaccession BETWEEN ? AND ?";
+            $params[] = $startDate;
+            $params[] = $endDate;
+            $types .= 'ss';
+        }
+
+        $stmt = $accession->conn->prepare($query);
+        if ($types) {
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $accessions = [];
+        while ($row = $result->fetch_assoc()) {
+            $accessions[] = $row;
+        }
+
+        // Generate Excel file using PhpSpreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Add header image and description
+        $drawing = new Drawing();
+        $drawing->setName('CSPC Logo');
+        $drawing->setDescription('CSPC Logo');
+        $drawing->setPath('path/to/cspc-logo.png'); // Path to the logo image
+        $drawing->setHeight(100);
+        $drawing->setCoordinates('A1');
+        $drawing->setWorksheet($sheet);
+
+        $sheet->setCellValue('A3', 'Republic of the Philippines')
+            ->setCellValue('A4', 'Camarines Sur Polytechnic Colleges')
+            ->setCellValue('A5', 'Nabua, Camarines Sur');
+
+        // Merge cells for the description
+        $sheet->mergeCells('A3:H3');
+        $sheet->mergeCells('A4:H4');
+        $sheet->mergeCells('A5:H5');
+
+        // Add table headers
+        $sheet->setCellValue('A7', 'Accession Record');
+        $sheet->mergeCells('A7:N7');
+
+        $headers = [
+            'Accession Number', 'Date Received', 'Class', 'Author', 'Title of Book', 'Edition', 'Volumes', 'Pages',
+            'Source of Fund', 'Cost', 'Publisher', 'Year', 'Remarks'
+        ];
+
+        $col = 'A';
+        $row = 8;
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . $row, $header);
+            $col++;
+        }
+
+        // Add data rows
+        $row = 9;
+        foreach ($accessions as $accession) {
+            $sheet->setCellValue('A' . $row, $accession['accession_number'])
+                ->setCellValue('B' . $row, $accession['date_received'])
+                ->setCellValue('C' . $row, $accession['type'])
+                ->setCellValue('D' . $row, $accession['author'])
+                ->setCellValue('E' . $row, $accession['title'])
+                ->setCellValue('F' . $row, $accession['edition'])
+                ->setCellValue('G' . $row, $accession['volumes'])
+                ->setCellValue('H' . $row, $accession['pages'])
+                ->setCellValue('I' . $row, $accession['source_of_fund'])
+                ->setCellValue('J' . $row, $accession['cost_price'])
+                ->setCellValue('K' . $row, $accession['publisher'])
+                ->setCellValue('L' . $row, $accession['dateaccession'])
+                ->setCellValue('M' . $row, $accession['remarks']);
+            $row++;
+        }
+
+        // Set column widths
+        foreach (range('A', 'M') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Save Excel file
+        $writer = new Xlsx($spreadsheet);
+        $filePath = __DIR__ . '/../../reports/accession_report.xlsx'; // Adjust the path as needed
+        $writer->save($filePath);
+
+        // Return file path for download
+        return $filePath;
     }
 }
 ?>

@@ -275,6 +275,42 @@ export const useAccessionStore = defineStore('accession', {
       this.publicationPlace = '';
       this.call_no = '';
       this.accession_id = null;
+    },
+    generateReport() {
+      const data = {
+        type: this.type,
+        department: this.department.name,
+        start_date: this.model ? this.model[0] : null,
+        end_date: this.model ? this.model[1] : null
+      };
+
+      $.ajax({
+        url: `${useStore().appURL}/admin.php`,
+        type: 'POST',
+        xhrFields: {
+          withCredentials: true
+        },
+        data: {
+          generate_report: JSON.stringify(data)
+        },
+        success: (response) => {
+          const link = document.createElement('a');
+          link.href = response.filePath;
+          link.download = 'accession_report.xlsx';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          this.snackbarMessage = 'Report generated successfully.';
+          this.snackbarColor = 'success';
+          this.snackbar = true;
+        },
+        error: (error) => {
+          console.error('Error generating report:', error);
+          this.snackbarMessage = 'Failed to generate report.';
+          this.snackbarColor = 'error';
+          this.snackbar = true;
+        }
+      });
     }
   }
 });

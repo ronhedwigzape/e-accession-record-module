@@ -18,10 +18,13 @@ else {
     if(!$admin->authenticated())
         denyAccess();
     else {
+
         if (isset($_GET['load'])) {
             // Fetch all accession records
             echo json_encode(Accession::rows());
-        } else if (isset($_POST['save'])) {
+        }
+
+        else if (isset($_POST['save'])) {
             // Create or update an accession record
             $data = json_decode($_POST['save'], true);
             if ($data) {
@@ -34,7 +37,9 @@ else {
             } else {
                 App::returnError('HTTP/1.1 400', 'Invalid input data.');
             }
-        } else if (isset($_POST['delete'])) {
+        }
+
+        else if (isset($_POST['delete'])) {
             // Delete an existing accession record
             $id = $_POST['delete'];
             $accession = Accession::findById($id);
@@ -47,7 +52,31 @@ else {
             } else {
                 App::returnError('HTTP/1.1 404', 'Accession record not found.');
             }
-        } else {
+        }
+
+        else if (isset($_POST['generate_report'])) {
+            $data = json_decode($_POST['generate_report'], true);
+            $type = $data['type'];
+            $department = $data['department'];
+            $startDate = $data['start_date'];
+            $endDate = $data['end_date'];
+
+            $filePath = Accession::generateReport($type, $department, $startDate, $endDate);
+
+            // Serve the file for download
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="accession_report.xlsx"');
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($filePath));
+            readfile($filePath);
+            exit;
+        }
+
+        else {
             denyAccess();
         }
     }

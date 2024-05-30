@@ -185,7 +185,7 @@
                     <v-btn variant="tonal" @click="useAccessionStore().resetForm">Reset</v-btn>
                     <v-btn variant="tonal" color="primary" @click="useAccessionStore().saveAccession">Save</v-btn>
                     <v-btn variant="tonal" color="error" @click="useAccessionStore().deleteAccession">Delete</v-btn>
-<!--                    <v-btn variant="tonal" color="secondary" @click="fillSampleData">Fill Sample Data</v-btn>-->
+                    <!--                    <v-btn variant="tonal" color="secondary" @click="fillSampleData">Fill Sample Data</v-btn>-->
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -249,10 +249,10 @@
             <v-form>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-radio-group inline>
-                    <v-radio label="Book" value="book"></v-radio>
-                    <v-radio label="AV" value="av"></v-radio>
-                    <v-radio label="UM" value="um"></v-radio>
+                  <v-radio-group v-model="useAccessionStore().type" inline>
+                    <v-radio label="Book" value="BK"></v-radio>
+                    <v-radio label="AV" value="AV"></v-radio>
+                    <v-radio label="UM" value="UM"></v-radio>
                   </v-radio-group>
                   <v-radio-group>
                     <v-radio label="Bibliographies" value="bibliographies"></v-radio>
@@ -261,6 +261,7 @@
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-select
+                    v-model="useAccessionStore().department"
                     clearable
                     label="Department"
                     :items="useAccessionStore().departments"
@@ -280,7 +281,7 @@
                   </div>
                 </v-col>
               </v-row>
-              <v-btn variant="tonal" color="primary">Generate</v-btn>
+              <v-btn variant="tonal" color="primary" @click="useAccessionStore().generateReport">Generate</v-btn>
             </v-form>
           </v-card-text>
         </v-card>
@@ -336,9 +337,9 @@
 </template>
 
 <script setup>
-import {useAccessionStore} from '@/stores/store-accession';
+import { useAccessionStore } from '@/stores/store-accession';
 import TopNavigationBar from "@/components/navbars/TopNavigationBar.vue";
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 
 onMounted(() => {
   useAccessionStore().fetchBooks();
