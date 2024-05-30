@@ -19,6 +19,8 @@ else {
         denyAccess();
     else {
         if (isset($_GET['load'])) {
+            require_once 'models/Accession.php';
+            require_once 'models/App.php';
             // Fetch a specific accession record
             if (isset($_GET['id'])) {
                 $accession = Accession::findById($_GET['id']);
@@ -32,6 +34,8 @@ else {
                 echo json_encode(Accession::rows());
             }
         } else if (isset($_POST['save'])) {
+            require_once 'models/Accession.php';
+            require_once 'models/App.php';
             // Create or update an accession record
             $data = json_decode($_POST['save'], true);
             if ($data) {
@@ -61,6 +65,8 @@ else {
                 App::returnError('HTTP/1.1 400', 'Invalid input data.');
             }
         } else if (isset($_POST['delete'])) {
+            require_once 'models/Accession.php';
+            require_once 'models/App.php';
             // Delete an existing accession record
             $id = $_POST['delete'];
             $accession = Accession::findById($id);
@@ -73,9 +79,11 @@ else {
             } else {
                 App::returnError('HTTP/1.1 404', 'Accession record not found.');
             }
-        } else {
-            denyAccess();
         }
+
+        else
+            denyAccess();
+
     }
 }
 ?>
