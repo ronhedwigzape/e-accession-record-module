@@ -27,6 +27,7 @@
                       <v-col cols="6">
                         <v-text-field
                           v-model="useAccessionStore().accession_number"
+                          @input="updateType"
                           label="Accession Number"
                           variant="outlined"
                           density="compact"
@@ -40,7 +41,7 @@
                         <v-text-field v-model="useAccessionStore().copy" label="No. of Copies" variant="outlined" density="compact"></v-text-field>
                       </v-col>
                       <v-col cols="6">
-                        <v-radio-group v-model="useAccessionStore().type" inline>
+                        <v-radio-group v-model="useAccessionStore().type" density="compact" inline>
                           <v-radio label="Book" value="BK"></v-radio>
                           <v-radio label="UM" value="UM"></v-radio>
                           <v-radio label="AV" value="AV"></v-radio>
@@ -113,6 +114,7 @@
                     <v-btn variant="tonal" @click="useAccessionStore().resetForm">Reset</v-btn>
                     <v-btn variant="tonal" color="primary" @click="useAccessionStore().saveAccession">Save</v-btn>
                     <v-btn variant="tonal" color="error" @click="useAccessionStore().deleteAccession">Delete</v-btn>
+<!--                    <v-btn variant="tonal" color="secondary" @click="fillSampleData">Fill Sample Data</v-btn>-->
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -256,5 +258,38 @@ import { onMounted } from "vue";
 onMounted(() => {
   useAccessionStore().fetchBooks();
 });
-</script>
 
+function updateType() {
+  if (useAccessionStore().accession_number.endsWith('AV')) {
+    useAccessionStore().type = 'AV';
+  } else if (useAccessionStore().accession_number.endsWith('UM')) {
+    useAccessionStore().type = 'UM';
+  } else {
+    useAccessionStore().type = 'BK';
+  }
+}
+
+function fillSampleData() {
+  const store = useAccessionStore();
+  store.accession_number = '006201AV';
+  store.date_received = new Date();
+  store.source_of_fund = 'Library Fund';
+  store.cost_price = '30.00';
+  store.remarks = 'Sample remarks';
+  store.isbn = '9789814732109';
+  store.dateaccession = new Date();
+  store.title = 'Sample Book Title';
+  store.author = 'Sample Author';
+  store.edition = '1st';
+  store.volumes = '1 of 3';
+  store.pages = '500';
+  store.copyright = '2024';
+  store.publisher = 'Sample Publisher';
+  store.department = 'CAS';
+  store.copy = '1';
+  store.encoder = 'Sample Encoder';
+  store.type = 'AV';
+  store.publicationPlace = 'Sample Place';
+  store.call_no = '123.456';
+}
+</script>
