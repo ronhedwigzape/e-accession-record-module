@@ -249,7 +249,7 @@
             <v-form>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-radio-group v-model="useAccessionStore().type" inline>
+                  <v-radio-group v-model="useAccessionStore().reportType" inline>
                     <v-radio label="Book" value="BK"></v-radio>
                     <v-radio label="AV" value="AV"></v-radio>
                     <v-radio label="UM" value="UM"></v-radio>

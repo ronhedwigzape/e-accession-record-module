@@ -66,6 +66,7 @@ export const useAccessionStore = defineStore('accession', {
     copy: '',
     encoder: '',
     type: '',
+    reportType: '',
     publicationPlace: '',
     call_no: '',
     accession_id: null,
@@ -282,7 +283,7 @@ export const useAccessionStore = defineStore('accession', {
     },
     generateReport() {
       const data = {
-        type: this.type,
+        type: this.reportType,
         department: this.reportDepartment.name,
         start_date: this.model ? this.model[0] : null,
         end_date: this.model ? this.model[1] : null
