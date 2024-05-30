@@ -131,6 +131,8 @@ class Admin extends User
      */
     public function loadAllAccessionRows()
     {
+        require_once 'Accession.php';
+
         return Accession::rows();
     }
 
