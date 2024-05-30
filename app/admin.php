@@ -25,27 +25,11 @@ else {
             // Create or update an accession record
             $data = json_decode($_POST['save'], true);
             if ($data) {
-                if (isset($data['id'])) {
-                    // Update existing record
-                    $accession = Accession::findById($data['id']);
-                    if ($accession) {
-                        $accession->fill($data);
-                        if ($accession->update()) {
-                            echo json_encode(['message' => 'Accession record updated successfully.']);
-                        } else {
-                            App::returnError('HTTP/1.1 500', 'Failed to update accession record.');
-                        }
-                    } else {
-                        App::returnError('HTTP/1.1 404', 'Accession record not found.');
-                    }
+                $accession = new Accession($data);
+                if ($accession->save()) {
+                    echo json_encode(['message' => 'Accession record saved successfully.']);
                 } else {
-                    // Create new record
-                    $accession = new Accession($data);
-                    if ($accession->save()) {
-                        echo json_encode(['message' => 'Accession record created successfully.']);
-                    } else {
-                        App::returnError('HTTP/1.1 500', 'Failed to create accession record.');
-                    }
+                    App::returnError('HTTP/1.1 500', 'Failed to save accession record.');
                 }
             } else {
                 App::returnError('HTTP/1.1 400', 'Invalid input data.');
