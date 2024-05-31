@@ -281,11 +281,18 @@ export const useAccessionStore = defineStore('accession', {
       this.call_no = '';
       this.accession_id = null;
     },
+    formatDate(date) {
+      if (!date) return null;
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
     generateReport() {
       const type = this.reportType;
-      const department = this.reportDepartment.name;
-      const startDate = this.model ? this.model[0].toISOString() : null;
-      const endDate = this.model ? this.model[1].toISOString() : null;
+      const department = this.reportDepartment ? this.reportDepartment.name : '';
+      const startDate = this.model ? this.formatDate(this.model[0]) : null;
+      const endDate = this.model ? this.formatDate(this.model[1]) : null;
 
       window.location.href = `${useStore().appURL}/admin.php?generateReport=true&type=${type}&department=${department}&start_date=${startDate}&end_date=${endDate}`;
     }
