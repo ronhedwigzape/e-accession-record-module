@@ -254,29 +254,41 @@ class Accession extends App
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Add logo
+        // Add logo with padding
         $drawing = new Drawing();
         $drawing->setName('Logo');
         $drawing->setDescription('Logo');
         $drawing->setPath('../assets/cspc_logo.png');
         $drawing->setHeight(100);
         $drawing->setCoordinates('A1');
+        $drawing->setOffsetX(30);
+        $drawing->setOffsetY(10);
         $drawing->setWorksheet($sheet);
 
         // Set title and header
-        $sheet->mergeCells('B1:G1');
+        $sheet->mergeCells('B1:H1');
         $sheet->setCellValue('B1', 'Republic of the Philippines');
-        $sheet->mergeCells('B2:G2');
+        $sheet->mergeCells('B2:H2');
         $sheet->setCellValue('B2', 'CAMARINES SUR POLYTECHNIC COLLEGES');
-        $sheet->mergeCells('B3:G3');
+        $sheet->getStyle('B2')->getFont()->setBold(true);
+        $sheet->mergeCells('B3:H3');
         $sheet->setCellValue('B3', 'Nabua, Camarines Sur');
 
-        $sheet->mergeCells('A4:M4');
+        $sheet->mergeCells('A4:P4');
         $sheet->setCellValue('A4', 'ACCESSION RECORD');
+        $sheet->getStyle('A4')->getFont()->setBold(true);
+        $sheet->getStyle('A4')->getFont()->setSize(14); // Make the text larger
+        $sheet->getStyle('A4:P4')->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)->getColor()->setARGB('FF0070C0');
+
+        // Align text to the left for specific cells
+        $sheet->getStyle('B1:H1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('B2:H2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('B3:H3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
         // Headers
         $headers = [
-            'Accession Number', 'DATE RECEIVED', 'CLASS', 'AUTHOR', 'TITLE OF BOOK', 'EDITION', 'VOLUMES', 'PAGES', 'SOURCE OF FUND', 'COST', 'PUBLISHER', 'YEAR', 'REMARKS'
+            'Accession Number', 'Date Accessioned', 'Volume', 'ISBN', 'Author', 'Title', 'Edition', 'Pages', 'Copyright',
+            'Publisher', 'Place of Publication', 'Department', 'Type', 'Cost Price', 'Source of Fund', 'Remarks'
         ];
 
         // Set headers in the fifth row
@@ -294,29 +306,50 @@ class Accession extends App
         foreach ($filteredAccessions as $accession) {
             $columnIndex = 'A';
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['accession_number']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['date_received']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, '1 of 1'); // Assuming 'CLASS' is '1 of 1'
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['dateaccession']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['volumes']);
+            $sheet->setCellValueExplicit($columnIndex++ . $rowIndex, $accession['isbn'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['author']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['title']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['edition']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['volumes']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['pages']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['source_of_fund']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['cost_price']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['copyright']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['publisher']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, date('Y', strtotime($accession['dateaccession'])));
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['publicationPlace']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['department']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['type']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['cost_price']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['source_of_fund']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['remarks']);
             $rowIndex++;
         }
 
         // Set column widths
-        foreach (range('A', 'M') as $columnID) {
+        foreach (range('A', 'P') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
+        // Set specific column widths for better spacing
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(10);
+        $sheet->getColumnDimension('D')->setWidth(20);
+        $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(10);
+        $sheet->getColumnDimension('H')->setWidth(10);
+        $sheet->getColumnDimension('I')->setWidth(15);
+        $sheet->getColumnDimension('J')->setWidth(20);
+        $sheet->getColumnDimension('K')->setWidth(20);
+        $sheet->getColumnDimension('L')->setWidth(15);
+        $sheet->getColumnDimension('M')->setWidth(10);
+        $sheet->getColumnDimension('N')->setWidth(15);
+        $sheet->getColumnDimension('O')->setWidth(20);
+        $sheet->getColumnDimension('P')->setWidth(20);
+
         // Set row heights
         for ($i = 1; $i <= $rowIndex; $i++) {
-            $sheet->getRowDimension($i)->setRowHeight(30); // Adjust row height as needed
+            $sheet->getRowDimension($i)->setRowHeight(30);
         }
 
         // Set border styles
@@ -327,27 +360,12 @@ class Accession extends App
                 ],
             ],
         ];
-        $sheet->getStyle('A5:M' . ($rowIndex - 1))->applyFromArray($styleArray);
+        $sheet->getStyle('A5:P' . ($rowIndex - 1))->applyFromArray($styleArray);
 
         // Set alignment and padding for all cells
-        $sheet->getStyle('A1:M' . ($rowIndex - 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A1:M' . ($rowIndex - 1))->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-        $sheet->getStyle('A1:M' . ($rowIndex - 1))->getAlignment()->setWrapText(true);
-
-        // Set specific column widths for better spacing
-        $sheet->getColumnDimension('A')->setWidth(15);
-        $sheet->getColumnDimension('B')->setWidth(20);
-        $sheet->getColumnDimension('C')->setWidth(10);
-        $sheet->getColumnDimension('D')->setWidth(25);
-        $sheet->getColumnDimension('E')->setWidth(40);
-        $sheet->getColumnDimension('F')->setWidth(10);
-        $sheet->getColumnDimension('G')->setWidth(10);
-        $sheet->getColumnDimension('H')->setWidth(10);
-        $sheet->getColumnDimension('I')->setWidth(20);
-        $sheet->getColumnDimension('J')->setWidth(10);
-        $sheet->getColumnDimension('K')->setWidth(20);
-        $sheet->getColumnDimension('L')->setWidth(10);
-        $sheet->getColumnDimension('M')->setWidth(20);
+        $sheet->getStyle('A4:P' . ($rowIndex - 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A4:P' . ($rowIndex - 1))->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A4:P' . ($rowIndex - 1))->getAlignment()->setWrapText(true);
 
         $writer = new Xlsx($spreadsheet);
         $filename = 'accession_report_' . date('Ymd') . '.xlsx';
@@ -355,6 +373,6 @@ class Accession extends App
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         $writer->save('php://output');
-    }
+   }
 }
 ?>
