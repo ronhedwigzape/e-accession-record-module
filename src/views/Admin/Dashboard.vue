@@ -281,7 +281,10 @@
                   </div>
                 </v-col>
               </v-row>
-              <v-btn variant="tonal" color="primary" @click="useAccessionStore().generateReport">Generate</v-btn>
+              <v-card-actions>
+                <v-btn variant="tonal" color="primary" @click="useAccessionStore().generateReport">Generate</v-btn>
+                <v-btn variant="tonal" @click="useAccessionStore().clearReportGenerationForm()">Reset</v-btn>
+              </v-card-actions>
             </v-form>
           </v-card-text>
         </v-card>

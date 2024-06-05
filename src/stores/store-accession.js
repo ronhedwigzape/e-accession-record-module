@@ -292,9 +292,16 @@ export const useAccessionStore = defineStore('accession', {
       const type = this.reportType;
       const department = this.reportDepartment ? this.reportDepartment.name : '';
       const startDate = this.model ? this.formatDate(this.model[0]) : null;
-      const endDate = this.model ? this.formatDate(this.model[1]) : null;
+      const endDate = this.model ? this.formatDate(this.model[this.model.length - 1]) : null;
 
       window.location.href = `${useStore().appURL}/admin.php?generateReport=true&type=${type}&department=${department}&start_date=${startDate}&end_date=${endDate}`;
+
+      this.clearReportGenerationForm();
+    },
+    clearReportGenerationForm() {
+      this.reportType = '';
+      this.reportDepartment = '';
+      this.model = null;
     }
   }
 });
