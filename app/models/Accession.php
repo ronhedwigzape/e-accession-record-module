@@ -207,130 +207,93 @@ class Accession extends App
     }
 
     /***************************************************************************
-     * Generate report based on filters
+     * Get all accession records and return as JSON
      *
-     * @param string $type
-     * @param string $department
-     * @param string $startDate
-     * @param string $endDate
+     * @return string
+     */
+    public static function fetchAllAccessions()
+    {
+        $accessions = self::rows();
+        return json_encode($accessions);
+    }
+
+    /***************************************************************************
+     * Generate an Excel report of all accession records
+     *
+     * @param string|null $type
+     * @param string|null $department
+     * @param string|null $start_date
+     * @param string|null $end_date
      * @return void
      */
-    public static function generateReport($type, $department, $startDate, $endDate)
+    public static function generateReport($type = null, $department = null, $start_date = null, $end_date = null)
     {
-        $accession = new Accession();
-        $query = "SELECT * FROM $accession->table WHERE 1=1";
-        $params = [];
-        $types = '';
+        $accessions = json_decode(self::fetchAllAccessions(), true);
 
-        if ($type) {
-            $query .= " AND type = ?";
-            $params[] = $type;
-            $types .= 's';
-        }
+        // Filter accessions based on type, department, and date range
+        $filteredAccessions = array_filter($accessions, function ($accession) use ($type, $department, $start_date, $end_date) {
+            $dateaccession = strtotime($accession['dateaccession']);
+            $startDate = $start_date ? strtotime($start_date) : null;
+            $endDate = $end_date ? strtotime($end_date) : null;
 
-        if ($department) {
-            $query .= " AND department = ?";
-            $params[] = $department;
-            $types .= 's';
-        }
+            $typeMatch = $type ? $accession['type'] === $type : true;
+            $departmentMatch = $department ? $accession['department'] === $department : true;
+            $dateMatch = true;
 
-        if ($startDate && $endDate) {
-            // Convert date strings to MySQL date format
-            $startDate = date('Y-m-d', strtotime($startDate));
-            $endDate = date('Y-m-d', strtotime($endDate));
-            $query .= " AND dateaccession BETWEEN ? AND ?";
-            $params[] = $startDate;
-            $params[] = $endDate;
-            $types .= 'ss';
-        }
+            if ($startDate && $endDate) {
+                $dateMatch = $dateaccession >= $startDate && $dateaccession <= $endDate;
+            } elseif ($startDate) {
+                $dateMatch = $dateaccession >= $startDate;
+            } elseif ($endDate) {
+                $dateMatch = $dateaccession <= $endDate;
+            }
 
-        $stmt = $accession->conn->prepare($query);
-        if ($types) {
-            $stmt->bind_param($types, ...$params);
-        }
-        $stmt->execute();
-        $result = $stmt->get_result();
+            return $typeMatch && $departmentMatch && $dateMatch;
+        });
 
-        $accessions = [];
-        while ($row = $result->fetch_assoc()) {
-            $accessions[] = $row;
-        }
-
-        // Generate Excel file using PhpSpreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Add header image and description
-        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-        $drawing->setName('CSPC Logo');
-        $drawing->setDescription('CSPC Logo');
-        $drawing->setPath('../assets/cspc_logo.png');
-        $drawing->setHeight(100);
-        $drawing->setCoordinates('A1');
-        $drawing->setWorksheet($sheet);
-
-        $sheet->setCellValue('B2', 'Republic of the Philippines')
-            ->setCellValue('B3', 'CAMARINES SUR POLYTECHNIC COLLEGES')
-            ->setCellValue('B4', 'Nabua, Camarines Sur');
-
-        // Merge cells for the description
-        $sheet->mergeCells('B2:H2');
-        $sheet->mergeCells('B3:H3');
-        $sheet->mergeCells('B4:H4');
-
-        // Add table headers
-        $sheet->setCellValue('A6', 'ACCESSION RECORD');
-        $sheet->mergeCells('A6:M6');
-
+        // Headers
         $headers = [
-            'Accession Number', 'DATE RECEIVED', 'AUTHOR', 'CLASS', 'TITLE OF BOOK', 'EDITION', 'VOLUMES', 'PAGES',
-            'SOURCE OF FUND', 'COST', 'YEAR', 'PUBLISHER', 'REMARKS'
+            'ID', 'Accession Number', 'Date Received', 'Source of Fund', 'Cost Price', 'Remarks', 'ISBN', 'Date Accession',
+            'Title', 'Author', 'Edition', 'Volumes', 'Pages', 'Copyright', 'Publisher', 'Department', 'Copy', 'Encoder',
+            'Type', 'Publication Place', 'Call No'
         ];
 
+        // Set headers in the first row
         $columnIndex = 'A';
         foreach ($headers as $header) {
-            $sheet->setCellValue($columnIndex . '7', $header);
+            $sheet->setCellValue($columnIndex . '1', $header);
             $columnIndex++;
         }
 
-        // Add data rows
-        $rowIndex = 8;
-        foreach ($accessions as $accession) {
+        $rowIndex = 2;
+        foreach ($filteredAccessions as $accession) {
             $columnIndex = 'A';
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['id']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['accession_number']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['date_received']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['author']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['type']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['source_of_fund']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['cost_price']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['remarks']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['isbn']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['dateaccession']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['title']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['author']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['edition']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['volumes']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['pages']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['source_of_fund']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['cost_price']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['dateaccession']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['copyright']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['publisher']);
-            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['remarks']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['department']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['copy']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['encoder']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['type']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['publicationPlace']);
+            $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['call_no']);
             $rowIndex++;
         }
-
-        // Set column widths
-        foreach (range('A', 'M') as $col) {
-            $sheet->getColumnDimension($col)->setAutoSize(true);
-        }
-
-        // Apply styles
-        $headerStyleArray = [
-            'font' => [
-                'bold' => true,
-                'color' => ['argb' => 'FFFFFFFF'],
-            ],
-            'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'startColor' => ['argb' => 'FF4F81BD'],
-            ],
-        ];
-
-        $sheet->getStyle('A7:M7')->applyFromArray($headerStyleArray);
 
         $writer = new Xlsx($spreadsheet);
         $filename = 'accession_report_' . date('Ymd') . '.xlsx';
@@ -338,7 +301,6 @@ class Accession extends App
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         $writer->save('php://output');
-        exit();
     }
 }
 ?>

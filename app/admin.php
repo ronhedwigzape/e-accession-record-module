@@ -55,13 +55,13 @@ else {
         }
 
         else if (isset($_GET['generateReport'])) {
-            $type = $_GET['type'] ?? null;
-            $department = $_GET['department'] ?? null;
-            $startDate = $_GET['start_date'] ?? null;
-            $endDate = $_GET['end_date'] ?? null;
+            $type = isset($_GET['type']) ? $_GET['type'] : null;
+            $department = isset($_GET['department']) ? $_GET['department'] : null;
+            $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : null;
+            $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : null;
 
             try {
-                Accession::generateReport($type, $department, $startDate, $endDate);
+                Accession::generateReport($type, $department, $start_date, $end_date);
             } catch (Exception $e) {
                 App::returnError('HTTP/1.1 500', 'Error generating report: ' . $e->getMessage());
             }
