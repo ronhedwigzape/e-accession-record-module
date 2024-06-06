@@ -254,10 +254,6 @@
                     <v-radio label="AV" value="AV"></v-radio>
                     <v-radio label="UM" value="UM"></v-radio>
                   </v-radio-group>
-                  <v-radio-group>
-                    <v-radio label="Bibliographies" value="bibliographies"></v-radio>
-                    <v-radio label="Materials for Circulation" value="circulation"></v-radio>
-                  </v-radio-group>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-select
