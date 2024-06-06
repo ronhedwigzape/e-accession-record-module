@@ -338,7 +338,7 @@ class Accession extends App
             $titleLength = strlen($accession['title']);
             $rowHeight = 45; // Default row height
             if ($titleLength > 100) {
-                $rowHeight = 85;
+                $rowHeight = 90;
             } else if ($titleLength > 50) {
                 $rowHeight = 70;
             } else if ($titleLength > 30) {
