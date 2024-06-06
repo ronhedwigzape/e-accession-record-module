@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\RichText\RichText;
 
 class Accession extends App
 {
@@ -265,25 +266,33 @@ class Accession extends App
         $drawing->setOffsetY(10);
         $drawing->setWorksheet($sheet);
 
-        // Set title and header
-        $sheet->mergeCells('B1:H1');
-        $sheet->setCellValue('B1', 'Republic of the Philippines');
-        $sheet->mergeCells('B2:H2');
-        $sheet->setCellValue('B2', 'CAMARINES SUR POLYTECHNIC COLLEGES');
-        $sheet->getStyle('B2')->getFont()->setBold(true);
-        $sheet->mergeCells('B3:H3');
-        $sheet->setCellValue('B3', 'Nabua, Camarines Sur');
+        // Add text box simulation by merging cells and applying styles
+        $sheet->mergeCells('B1:C3');
+        $richText = new RichText();
+        $richText->createText('Republic of the Philippines' . "\n");
 
+        $boldText = $richText->createTextRun('CAMARINES SUR POLYTECHNIC COLLEGES');
+        $boldText->getFont()->setBold(true);
+
+        $richText->createText("\nNabua, Camarines Sur");
+
+        $sheet->setCellValue('B1', $richText);
+        $sheet->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('B1')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('B1')->getAlignment()->setWrapText(true);
+
+        // Set title and header
         $sheet->mergeCells('A4:P4');
         $sheet->setCellValue('A4', 'ACCESSION RECORD');
         $sheet->getStyle('A4')->getFont()->setBold(true);
-        $sheet->getStyle('A4')->getFont()->setSize(18); // Make the text larger
+        $sheet->getStyle('A4')->getFont()->setSize(18);
         $sheet->getStyle('A4:P4')->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)->getColor()->setARGB('FF0070C0');
 
-        // Align text to the left for specific cells
-        $sheet->getStyle('B1:H1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyle('B2:H2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyle('B3:H3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        // Set specific row heights for rows 1 to 3 and row 4
+        $sheet->getRowDimension(1)->setRowHeight(30);
+        $sheet->getRowDimension(2)->setRowHeight(30);
+        $sheet->getRowDimension(3)->setRowHeight(30);
+        $sheet->getRowDimension(4)->setRowHeight(40);
 
         // Headers
         $headers = [
@@ -324,32 +333,14 @@ class Accession extends App
             $rowIndex++;
         }
 
-        // Set column widths
+        // Set column widths to the same size
         foreach (range('A', 'P') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+            $sheet->getColumnDimension($columnID)->setWidth(20);
         }
 
-        // Set specific column widths for better spacing
-        $sheet->getColumnDimension('A')->setWidth(15);
-        $sheet->getColumnDimension('B')->setWidth(20);
-        $sheet->getColumnDimension('C')->setWidth(10);
-        $sheet->getColumnDimension('D')->setWidth(20);
-        $sheet->getColumnDimension('E')->setWidth(10);
-        $sheet->getColumnDimension('F')->setWidth(10);
-        $sheet->getColumnDimension('G')->setWidth(10);
-        $sheet->getColumnDimension('H')->setWidth(10);
-        $sheet->getColumnDimension('I')->setWidth(15);
-        $sheet->getColumnDimension('J')->setWidth(20);
-        $sheet->getColumnDimension('K')->setWidth(20);
-        $sheet->getColumnDimension('L')->setWidth(15);
-        $sheet->getColumnDimension('M')->setWidth(10);
-        $sheet->getColumnDimension('N')->setWidth(15);
-        $sheet->getColumnDimension('O')->setWidth(20);
-        $sheet->getColumnDimension('P')->setWidth(20);
-
-        // Set row heights
-        for ($i = 1; $i <= $rowIndex; $i++) {
-            $sheet->getRowDimension($i)->setRowHeight(30);
+        // Set specific row heights for the table only
+        for ($i = 5; $i <= $rowIndex; $i++) {
+            $sheet->getRowDimension($i)->setRowHeight(45);
         }
 
         // Set border styles
@@ -373,6 +364,6 @@ class Accession extends App
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         $writer->save('php://output');
-   }
+    }
 }
 ?>
