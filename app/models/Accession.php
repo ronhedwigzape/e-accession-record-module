@@ -228,7 +228,7 @@ class Accession extends App
      * @return void
      */
     public static function generateReport($type = null, $department = null, $start_date = null, $end_date = null)
-    {
+{
         $accessions = json_decode(self::fetchAllAccessions(), true);
 
         // Filter accessions based on type, department, and date range
@@ -267,14 +267,17 @@ class Accession extends App
         $drawing->setWorksheet($sheet);
 
         // Add text box simulation by merging cells and applying styles
-        $sheet->mergeCells('B1:C3');
+        $sheet->mergeCells('B1:D3');
         $richText = new RichText();
-        $richText->createText('Republic of the Philippines' . "\n");
+
+        $text1 = $richText->createTextRun('Republic of the Philippines' . "\n");
+        $text1->getFont()->setSize(12);
 
         $boldText = $richText->createTextRun('CAMARINES SUR POLYTECHNIC COLLEGES');
-        $boldText->getFont()->setBold(true);
+        $boldText->getFont()->setBold(true)->setSize(14);
 
-        $richText->createText("\nNabua, Camarines Sur");
+        $text2 = $richText->createTextRun("\nNabua, Camarines Sur");
+        $text2->getFont()->setSize(12);
 
         $sheet->setCellValue('B1', $richText);
         $sheet->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
@@ -336,11 +339,9 @@ class Accession extends App
             $rowHeight = 45; // Default row height
             if ($titleLength > 100) {
                 $rowHeight = 85;
-            }
-            else if ($titleLength > 50) {
+            } else if ($titleLength > 50) {
                 $rowHeight = 70;
-            }
-            else if ($titleLength > 30) {
+            } else if ($titleLength > 30) {
                 $rowHeight = 50;
             }
             $sheet->getRowDimension($rowIndex)->setRowHeight($rowHeight);
