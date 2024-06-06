@@ -277,7 +277,7 @@ class Accession extends App
         $sheet->mergeCells('A4:P4');
         $sheet->setCellValue('A4', 'ACCESSION RECORD');
         $sheet->getStyle('A4')->getFont()->setBold(true);
-        $sheet->getStyle('A4')->getFont()->setSize(14); // Make the text larger
+        $sheet->getStyle('A4')->getFont()->setSize(18); // Make the text larger
         $sheet->getStyle('A4:P4')->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK)->getColor()->setARGB('FF0070C0');
 
         // Align text to the left for specific cells
@@ -287,8 +287,8 @@ class Accession extends App
 
         // Headers
         $headers = [
-            'Accession Number', 'Date Accessioned', 'Volume', 'ISBN', 'Author', 'Title', 'Edition', 'Pages', 'Copyright',
-            'Publisher', 'Place of Publication', 'Department', 'Type', 'Cost Price', 'Source of Fund', 'Remarks'
+            'ACCESSION NUMBER', 'DATE ACCESSIONED', 'VOLUME', 'ISBN', 'AUTHOR', 'TITLE', 'EDITION', 'PAGES', 'COPYRIGHT',
+            'PUBLISHER', 'PLACE OF PUBLICATION', 'DEPARTMENT', 'TYPE', 'COST PRICE', 'SOURCE OF FUND', 'REMARKS'
         ];
 
         // Set headers in the fifth row
