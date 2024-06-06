@@ -330,17 +330,27 @@ class Accession extends App
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['cost_price']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['source_of_fund']);
             $sheet->setCellValue($columnIndex++ . $rowIndex, $accession['remarks']);
+
+            // Adjust row height based on title length
+            $titleLength = strlen($accession['title']);
+            $rowHeight = 45; // Default row height
+            if ($titleLength > 100) {
+                $rowHeight = 85;
+            }
+            else if ($titleLength > 50) {
+                $rowHeight = 70;
+            }
+            else if ($titleLength > 30) {
+                $rowHeight = 50;
+            }
+            $sheet->getRowDimension($rowIndex)->setRowHeight($rowHeight);
+
             $rowIndex++;
         }
 
         // Set column widths to the same size
         foreach (range('A', 'P') as $columnID) {
             $sheet->getColumnDimension($columnID)->setWidth(20);
-        }
-
-        // Set specific row heights for the table only
-        for ($i = 5; $i <= $rowIndex; $i++) {
-            $sheet->getRowDimension($i)->setRowHeight(45);
         }
 
         // Set border styles
@@ -358,8 +368,11 @@ class Accession extends App
         $sheet->getStyle('A4:P' . ($rowIndex - 1))->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
         $sheet->getStyle('A4:P' . ($rowIndex - 1))->getAlignment()->setWrapText(true);
 
+        // Set zoom scale to 85%
+        $sheet->getSheetView()->setZoomScale(85);
+
         $writer = new Xlsx($spreadsheet);
-        $filename = 'accession_report_' . date('Ymd') . '.xlsx';
+        $filename = 'Accession_Report_' . date('Ymd') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
